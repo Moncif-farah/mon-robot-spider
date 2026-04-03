@@ -3,442 +3,1270 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portfolio - Ingénieur Robotique</title>
+<title>Portfolio — Ingénieur</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-/* Clean, monochrome, AI-assisted look */
-:root {
-  --bg: #ffffff;
-  --bg-sidebar: #f9fafb;
-  --bg-card: #ffffff;
-  --border: #e5e7eb;
-  --text: #1f2937;
-  --text-muted: #6b7280;
-  --accent: #10a37f;
-  --highlight: rgba(16, 163, 127, 0.1);
-  --font-sans: 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --sidebar-w: 260px;
+/* ─── TOKENS ─────────────────────────────────────────────── */
+:root[data-theme="dark"]{
+  --bg:#09090f;--surface:#111118;--surface2:#18181f;--border:#252530;
+  --text:#f0f0f5;--text2:#888898;--text3:#555565;
+  --accent:#2563eb;--accent-dim:rgba(37,99,235,.12);
+  --mono:#7dd3fc;
 }
-[data-theme="dark"] {
-  --bg: #343541;
-  --bg-sidebar: #202123;
-  --bg-card: #444654;
-  --border: #4d4d4f;
-  --text: #ececf1;
-  --text-muted: #8e8ea0;
-  --accent: #10a37f;
-  --highlight: rgba(16, 163, 127, 0.15);
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-  font-family: var(--font-sans);
-  background: var(--bg);
-  color: var(--text);
-  display: flex;
-  height: 100vh;
-  overflow: hidden;
-  transition: background 0.3s, color 0.3s;
+:root[data-theme="light"]{
+  --bg:#f4f4f7;--surface:#ffffff;--surface2:#ebebf0;--border:#dddde8;
+  --text:#0d0d14;--text2:#5c5c72;--text3:#aaaabc;
+  --accent:#2563eb;--accent-dim:rgba(37,99,235,.08);
+  --mono:#1d4ed8;
 }
 
-/* SIDEBAR */
-.sidebar {
-  width: var(--sidebar-w);
-  background: var(--bg-sidebar);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.3s ease;
-  z-index: 100;
+/* ─── RESET & BASE ───────────────────────────────────────── */
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);color:var(--text);
+  min-height:100vh;overflow-x:hidden;
+  transition:background .25s,color .25s;
 }
-.sidebar-header {
-  padding: 20px;
-  border-bottom: 1px solid var(--border);
-  font-weight: 600;
-  font-size: 1.1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+a{color:inherit;text-decoration:none;}
+button{cursor:pointer;font-family:inherit;}
+
+/* ─── SIDEBAR ────────────────────────────────────────────── */
+.sidebar{
+  position:fixed;top:0;left:0;
+  width:260px;height:100vh;
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  transform:translateX(-260px);
+  transition:transform .35s cubic-bezier(.4,0,.2,1);
+  z-index:200;
+  overflow:hidden;
 }
-.theme-toggle {
-  cursor: pointer;
-  color: var(--text-muted);
-  font-size: 0.9rem;
+.sidebar.open{transform:translateX(0);}
+
+.sidebar-header{
+  padding:28px 24px 20px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
 }
-.theme-toggle:hover { color: var(--text); }
-.nav-group {
-  padding: 16px 12px;
+.sidebar-logo{
+  font-family:'DM Serif Display',serif;
+  font-size:1.05rem;letter-spacing:.02em;color:var(--text);
 }
-.nav-title {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 8px;
-  padding: 0 8px;
-  font-weight: 600;
+.sidebar-close{
+  width:28px;height:28px;background:none;border:none;
+  color:var(--text2);font-size:1.2rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:color .2s;
 }
-.nav-item {
-  padding: 10px 12px;
-  margin-bottom: 4px;
-  border-radius: 6px;
-  cursor: pointer;
-  color: var(--text);
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  transition: background 0.2s;
+.sidebar-close:hover{color:var(--text);}
+
+.sidebar-nav{flex:1;overflow-y:auto;padding:16px 0;}
+.nav-section-label{
+  padding:16px 24px 6px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--text3);
 }
-.nav-item:hover {
-  background: var(--bg-card);
+.nav-item{
+  display:flex;align-items:center;
+  padding:10px 24px;
+  font-size:.9rem;font-weight:400;
+  color:var(--text2);
+  border-left:2px solid transparent;
+  transition:all .18s;gap:10px;
 }
-.nav-item.active {
-  background: var(--highlight);
-  color: var(--accent);
-  font-weight: 500;
+.nav-item:hover,.nav-item.active{
+  color:var(--text);
+  background:var(--accent-dim);
+  border-left-color:var(--accent);
 }
-.nav-item svg {
-  width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none;
+.nav-item .nav-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--border);flex-shrink:0;
+  transition:background .18s;
+}
+.nav-item.active .nav-dot,.nav-item:hover .nav-dot{background:var(--accent);}
+
+.nav-project-sub{
+  padding:7px 24px 7px 46px;
+  font-size:.82rem;color:var(--text3);
+  transition:all .18s;border-left:2px solid transparent;
+}
+.nav-project-sub:hover,.nav-project-sub.active{
+  color:var(--text2);background:var(--accent-dim);
+  border-left-color:var(--border);
 }
 
-/* MAIN CONTENT */
-.main-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  position: relative;
-}
-.page {
-  display: none;
-  padding: 60px;
-  max-width: 900px;
-  margin: 0 auto;
-  width: 100%;
-  animation: slideFadeIn 0.4s ease forwards;
-}
-.page.active {
-  display: block;
-}
-@keyframes slideFadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+.sidebar-footer{
+  padding:16px 24px;border-top:1px solid var(--border);
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text3);
 }
 
-/* TOGGLE SIDEBAR MOBILE */
-.mobile-nav {
-  display: none;
-  padding: 16px 20px;
-  background: var(--bg-sidebar);
-  border-bottom: 1px solid var(--border);
-  align-items: center;
-  position: sticky;
-  top: 0;
-  z-index: 90;
+/* ─── OVERLAY ────────────────────────────────────────────── */
+.overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.45);
+  z-index:190;opacity:0;pointer-events:none;
+  transition:opacity .3s;
 }
-.hamburger {
-  background: none; border: none; color: var(--text); cursor: pointer;
-}
-.hamburger svg { width: 24px; height: 24px; stroke: currentColor; stroke-width: 2; fill: none; }
+.overlay.show{opacity:1;pointer-events:all;}
 
-/* TYPOGRAPHY & LAYOUT */
-h1 { font-size: 2.2rem; font-weight: 600; margin-bottom: 16px; letter-spacing: -0.02em; }
-h2 { font-size: 1.5rem; font-weight: 500; margin: 32px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-p { font-size: 1rem; line-height: 1.7; color: var(--text-muted); margin-bottom: 16px; }
-
-/* PROJECT TABS */
-.project-tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 32px;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 8px;
+/* ─── TOPBAR ─────────────────────────────────────────────── */
+.topbar{
+  position:fixed;top:0;left:0;right:0;height:52px;
+  background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;z-index:100;
 }
-.tab-btn {
-  background: none; border: none; padding: 8px 16px; cursor: pointer;
-  color: var(--text-muted); font-family: var(--font-sans); font-size: 0.95rem;
-  border-radius: 6px; transition: all 0.2s;
+.topbar-left{display:flex;align-items:center;gap:14px;}
+.burger{
+  width:36px;height:36px;background:none;
+  border:1px solid var(--border);border-radius:6px;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:4px;
+  transition:border-color .2s,background .2s;
 }
-.tab-btn:hover { color: var(--text); background: var(--bg-card); }
-.tab-btn.active { color: var(--text); font-weight: 500; background: var(--bg-card); box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid var(--border); }
-.tab-pane { display: none; animation: slideFadeIn 0.3s ease; }
-.tab-pane.active { display: block; }
-
-/* COMPONENTS */
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
-.card {
-  background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
-  padding: 24px; display: flex; flex-direction: column; gap: 12px;
+.burger:hover{border-color:var(--accent);background:var(--accent-dim);}
+.burger span{
+  display:block;width:14px;height:1.5px;
+  background:var(--text2);transition:all .25s;
 }
-.card-header { font-weight: 600; font-size: 1.1rem; }
-.card-meta { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); }
-.card-body { font-size: 0.9rem; line-height: 1.6; color: var(--text-muted); }
-
-/* CODE BLOCKS */
-.code-block {
-  background: var(--bg-sidebar); border: 1px solid var(--border); border-radius: 8px;
-  overflow: hidden; margin-bottom: 24px;
+.burger.active span:nth-child(1){transform:rotate(45deg) translate(4px,4px);}
+.burger.active span:nth-child(2){opacity:0;}
+.burger.active span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px);}
+.topbar-title{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.78rem;color:var(--text3);letter-spacing:.05em;
 }
-.code-header {
-  padding: 8px 16px; background: var(--bg-card); border-bottom: 1px solid var(--border);
-  font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.theme-btn{
+  width:36px;height:36px;background:none;
+  border:1px solid var(--border);border-radius:6px;
+  color:var(--text2);font-size:.85rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
 }
-.code-content { padding: 16px; overflow-x: auto; font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.5; color: var(--text); }
+.theme-btn:hover{border-color:var(--accent);color:var(--text);background:var(--accent-dim);}
 
-/* TABLES */
-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 0.9rem; }
-th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
-th { font-weight: 500; color: var(--text); background: var(--bg-card); }
-td { color: var(--text-muted); font-family: var(--font-mono); font-size: 0.85rem; }
+/* ─── MAIN ───────────────────────────────────────────────── */
+.main{
+  margin-top:52px;
+  min-height:calc(100vh - 52px);
+  max-width:960px;margin-left:auto;margin-right:auto;
+  padding:64px 32px 80px;
+}
 
-/* MEDIA QUERIES */
-@media (max-width: 768px) {
-  .sidebar { position: fixed; transform: translateX(-100%); height: 100%; }
-  .sidebar.open { transform: translateX(0); }
-  .mobile-nav { display: flex; }
-  .page { padding: 30px 20px; }
-  h1 { font-size: 1.8rem; }
+/* ─── PAGE TRANSITIONS ───────────────────────────────────── */
+.page{display:none;}
+.page.active{display:block;animation:pageIn .35s ease forwards;}
+.page.exit{animation:pageOut .2s ease forwards;}
+@keyframes pageIn{
+  from{opacity:0;transform:translateY(16px);}
+  to{opacity:1;transform:translateY(0);}
+}
+@keyframes pageOut{
+  from{opacity:1;transform:translateY(0);}
+  to{opacity:0;transform:translateY(-8px);}
+}
+
+/* ─── HOME PAGE ──────────────────────────────────────────── */
+.home-eyebrow{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:20px;
+}
+.home-name{
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(2.8rem,6vw,4.5rem);
+  line-height:1.05;color:var(--text);
+  margin-bottom:16px;
+}
+.home-name em{font-style:italic;color:var(--text2);}
+.home-role{
+  font-size:1rem;color:var(--text2);
+  font-weight:300;margin-bottom:40px;
+  line-height:1.5;max-width:520px;
+}
+.home-divider{
+  width:40px;height:1px;background:var(--border);
+  margin-bottom:40px;
+}
+.home-bio{
+  font-size:.95rem;line-height:1.8;color:var(--text2);
+  max-width:600px;margin-bottom:48px;
+}
+.home-bio strong{color:var(--text);font-weight:500;}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:56px;}
+.tag{
+  padding:5px 12px;
+  border:1px solid var(--border);border-radius:4px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;color:var(--text3);
+  letter-spacing:.03em;
+  transition:all .2s;
+}
+.tag:hover{border-color:var(--accent);color:var(--mono);}
+.home-cta{display:flex;gap:12px;flex-wrap:wrap;}
+.btn{
+  padding:10px 22px;border-radius:5px;
+  font-size:.88rem;font-weight:500;
+  border:1px solid var(--border);
+  background:none;color:var(--text2);
+  transition:all .2s;letter-spacing:.01em;
+}
+.btn:hover{border-color:var(--text2);color:var(--text);}
+.btn.primary{
+  background:var(--accent);color:#fff;
+  border-color:var(--accent);
+}
+.btn.primary:hover{background:#1d4ed8;border-color:#1d4ed8;}
+
+/* ─── SECTION HEADER ─────────────────────────────────────── */
+.section-eyebrow{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--text3);margin-bottom:8px;
+}
+.section-title{
+  font-family:'DM Serif Display',serif;
+  font-size:2rem;color:var(--text);
+  margin-bottom:8px;
+}
+.section-sub{
+  font-size:.9rem;color:var(--text2);
+  margin-bottom:40px;max-width:500px;line-height:1.6;
+}
+
+/* ─── PROJECT CARDS ──────────────────────────────────────── */
+.project-grid{display:flex;flex-direction:column;gap:1px;background:var(--border);}
+.project-card{
+  background:var(--surface);
+  padding:28px 32px;
+  display:grid;grid-template-columns:1fr auto;
+  gap:16px;align-items:start;
+  transition:background .18s;
+  cursor:pointer;
+  border:none;text-align:left;width:100%;
+  font-family:inherit;color:inherit;
+}
+.project-card:hover{background:var(--surface2);}
+.project-card-title{
+  font-family:'DM Serif Display',serif;
+  font-size:1.3rem;color:var(--text);margin-bottom:6px;
+}
+.project-card-desc{
+  font-size:.88rem;color:var(--text2);
+  line-height:1.6;max-width:520px;margin-bottom:14px;
+}
+.project-meta{
+  display:flex;gap:20px;flex-wrap:wrap;
+}
+.project-meta-item{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--text3);
+}
+.project-meta-item strong{color:var(--text2);}
+.project-arrow{
+  font-size:1.1rem;color:var(--text3);
+  transition:transform .2s,color .2s;
+  margin-top:4px;flex-shrink:0;
+}
+.project-card:hover .project-arrow{
+  transform:translateX(4px);color:var(--accent);
+}
+.project-stack{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px;}
+.stack-chip{
+  padding:3px 9px;
+  border:1px solid var(--border);border-radius:3px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.65rem;color:var(--text3);
+}
+
+/* ─── PROJECT DETAIL ─────────────────────────────────────── */
+.back-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--text3);border:none;background:none;
+  margin-bottom:40px;padding:0;
+  transition:color .2s;
+}
+.back-btn:hover{color:var(--text);}
+.project-header{margin-bottom:48px;}
+.project-header-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:12px;
+}
+.project-header-title{
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(2rem,4vw,3rem);color:var(--text);
+  margin-bottom:16px;line-height:1.1;
+}
+.project-header-desc{
+  font-size:.95rem;color:var(--text2);
+  line-height:1.75;max-width:580px;
+}
+.detail-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--border);
+  border:1px solid var(--border);
+  border-radius:6px;overflow:hidden;
+  margin-bottom:40px;
+}
+.detail-cell{
+  background:var(--surface);padding:20px 22px;
+}
+.detail-cell-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--text3);margin-bottom:6px;
+}
+.detail-cell-value{font-size:.92rem;color:var(--text);font-weight:500;}
+
+/* COMPONENTS TABLE */
+.component-table{
+  width:100%;border-collapse:collapse;
+  margin-bottom:40px;
+}
+.component-table th{
+  text-align:left;padding:10px 16px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--text3);border-bottom:1px solid var(--border);
+  font-weight:400;
+}
+.component-table td{
+  padding:14px 16px;border-bottom:1px solid var(--border);
+  font-size:.88rem;color:var(--text2);vertical-align:top;
+  line-height:1.5;
+}
+.component-table tr:last-child td{border-bottom:none;}
+.component-table tr:hover td{background:var(--surface2);}
+.component-table .td-name{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.82rem;color:var(--text);font-weight:500;
+}
+.component-table .td-model{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.75rem;color:var(--mono);
+}
+
+/* CODE BLOCK */
+.code-wrapper{
+  border:1px solid var(--border);border-radius:6px;
+  overflow:hidden;margin-bottom:40px;
+}
+.code-topbar{
+  padding:10px 16px;background:var(--surface2);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.code-filename{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;color:var(--text3);
+}
+.code-lang{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.65rem;color:var(--accent);
+  text-transform:uppercase;letter-spacing:.1em;
+}
+.annotated{display:grid;grid-template-columns:1fr 280px;}
+.code-pane{
+  padding:20px 20px;overflow-x:auto;
+  border-right:1px solid var(--border);
+}
+.code-pane pre{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.78rem;line-height:1.85;
+  color:var(--text2);white-space:pre;
+}
+.expl-pane{padding:20px 18px;background:var(--surface2);}
+.expl-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:8px;
+}
+.expl-body{font-size:.8rem;color:var(--text2);line-height:1.7;}
+.expl-body code{
+  font-family:'JetBrains Mono',monospace;
+  background:var(--surface);padding:1px 5px;
+  border-radius:3px;font-size:.75rem;color:var(--mono);
+}
+.kw{color:#60a5fa;}.fn{color:#93c5fd;}.str{color:#86efac;}
+.num{color:#fca5a5;}.cm{color:var(--text3);}.pp{color:#c084fc;}
+.tab-bar{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:32px;}
+.tab{
+  padding:9px 20px;border:none;background:none;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--text3);border-bottom:2px solid transparent;
+  margin-bottom:-1px;transition:all .18s;
+}
+.tab.active{color:var(--text);border-bottom-color:var(--accent);}
+.tab:hover:not(.active){color:var(--text2);}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;animation:pageIn .25s ease;}
+
+/* WIRING TABLE */
+.wire-table{
+  width:100%;border-collapse:collapse;
+  border:1px solid var(--border);border-radius:6px;
+  overflow:hidden;margin-bottom:32px;font-size:.85rem;
+}
+.wire-table th{
+  padding:10px 16px;background:var(--surface2);
+  font-family:'JetBrains Mono',monospace;
+  font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--text3);font-weight:400;border-bottom:1px solid var(--border);
+  text-align:left;
+}
+.wire-table td{
+  padding:12px 16px;border-bottom:1px solid var(--border);
+  font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text2);
+}
+.wire-table tr:last-child td{border-bottom:none;}
+.wire-table tr:hover td{background:var(--surface2);}
+
+/* GALLERY */
+.gallery-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:12px;margin-bottom:40px;
+}
+.gallery-cell{
+  aspect-ratio:4/3;
+  border:1px solid var(--border);border-radius:4px;
+  background:var(--surface2);overflow:hidden;
+  position:relative;cursor:pointer;
+  transition:border-color .2s;
+}
+.gallery-cell:hover{border-color:var(--accent);}
+.gallery-cell img{width:100%;height:100%;object-fit:cover;display:block;}
+.gallery-placeholder-cell{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:8px;height:100%;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.65rem;color:var(--text3);
+  text-align:center;padding:12px;
+}
+.gallery-add-cell{
+  border:1px dashed var(--border);border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  aspect-ratio:4/3;cursor:pointer;
+  color:var(--text3);font-size:1.4rem;
+  transition:all .2s;
+}
+.gallery-add-cell:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+.gallery-label{
+  margin-top:6px;font-family:'JetBrains Mono',monospace;
+  font-size:.65rem;color:var(--text3);
+}
+.gallery-change-btn{
+  position:absolute;inset:0;background:rgba(0,0,0,.65);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .2s;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;
+  letter-spacing:.08em;text-transform:uppercase;color:#fff;
+}
+.gallery-cell:hover .gallery-change-btn{opacity:1;}
+
+/* ─── CONTACT PAGE ───────────────────────────────────────── */
+.contact-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:40px;margin-top:40px;
+}
+.contact-item{
+  padding:24px 0;border-top:1px solid var(--border);
+}
+.contact-item-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--text3);margin-bottom:8px;
+}
+.contact-item-value{
+  font-size:.95rem;color:var(--text);font-weight:400;
+}
+.contact-item-value a:hover{color:var(--accent);}
+.contact-note{
+  margin-top:48px;padding:24px 28px;
+  border:1px solid var(--border);border-radius:6px;
+  font-size:.88rem;color:var(--text2);line-height:1.75;
+}
+
+/* ─── MODAL ──────────────────────────────────────────────── */
+.modal-backdrop{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);
+  z-index:500;display:none;align-items:center;justify-content:center;
+  backdrop-filter:blur(3px);
+}
+.modal-backdrop.open{display:flex;}
+.modal{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:8px;padding:28px;width:90%;max-width:400px;
+  animation:pageIn .25s ease;
+}
+.modal-title{
+  font-family:'DM Serif Display',serif;
+  font-size:1.3rem;margin-bottom:20px;color:var(--text);
+}
+.field-label{
+  display:block;font-family:'JetBrains Mono',monospace;
+  font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--text3);margin-bottom:5px;margin-top:14px;
+}
+.field-input,.field-select{
+  width:100%;padding:9px 12px;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:4px;color:var(--text);
+  font-family:'DM Sans',sans-serif;font-size:.88rem;
+  outline:none;transition:border-color .2s;
+}
+.field-input:focus,.field-select:focus{border-color:var(--accent);}
+.drop-zone{
+  border:1px dashed var(--border);border-radius:4px;
+  padding:24px;text-align:center;cursor:pointer;
+  transition:all .2s;color:var(--text3);margin-top:14px;
+  font-family:'JetBrains Mono',monospace;font-size:.72rem;
+}
+.drop-zone:hover,.drop-zone.dragover{
+  border-color:var(--accent);color:var(--accent);background:var(--accent-dim);
+}
+.modal-preview{
+  width:100%;border-radius:4px;margin-top:12px;
+  max-height:160px;object-fit:cover;display:none;
+}
+.modal-actions{
+  display:flex;gap:10px;justify-content:flex-end;margin-top:20px;
+}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────── */
+@media(max-width:700px){
+  .main{padding:40px 18px 60px;}
+  .annotated{grid-template-columns:1fr;}
+  .expl-pane{border-right:none;border-top:1px solid var(--border);}
+  .contact-grid{grid-template-columns:1fr;}
+  .detail-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:480px){
+  .detail-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
 <body>
 
-<!-- MOBILE NAV -->
-<div class="mobile-nav">
-  <button class="hamburger" onclick="toggleSidebar()">
-    <svg viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
-  </button>
-  <div style="margin-left: 16px; font-weight: 500;">Portfolio Ingénieur</div>
-</div>
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
 <!-- SIDEBAR -->
-<nav class="sidebar" id="sidebar">
+<aside class="sidebar" id="sidebar">
   <div class="sidebar-header">
-    <span>Portfolio</span>
-    <span class="theme-toggle" onclick="toggleTheme()" title="Changer le thème">
-      <svg width="18" height="18" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-    </span>
+    <div class="sidebar-logo">Portfolio</div>
+    <button class="sidebar-close" onclick="closeSidebar()">&#x2715;</button>
   </div>
-  
-  <div class="nav-group">
-    <div class="nav-title">Général</div>
-    <div class="nav-item active" id="nav-home" onclick="showPage('home')">
-      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-      Accueil
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Navigation</div>
+    <div class="nav-item active" id="nav-home" onclick="navigate('home')">
+      <span class="nav-dot"></span> À propos
     </div>
-    <div class="nav-item" id="nav-contact" onclick="showPage('contact')">
-      <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-      Contact
+    <div class="nav-item" id="nav-projects" onclick="navigate('projects')">
+      <span class="nav-dot"></span> Projets
+    </div>
+    <div id="project-subnav" style="display:none;">
+      <div class="nav-project-sub active" id="subnav-spider" onclick="navigate('spider')">
+        Mini Spider Robot
+      </div>
+      <div class="nav-project-sub" id="subnav-project2" onclick="navigate('project2')">
+        Projet 2 — à définir
+      </div>
+      <div class="nav-project-sub" id="subnav-project3" onclick="navigate('project3')">
+        Projet 3 — à définir
+      </div>
+    </div>
+    <div class="nav-item" id="nav-contact" onclick="navigate('contact')">
+      <span class="nav-dot"></span> Contact
+    </div>
+  </nav>
+  <div class="sidebar-footer">AI Assisted — 2025</div>
+</aside>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-left">
+    <button class="burger" id="burger" onclick="toggleSidebar()">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="topbar-title" id="topbar-label">À propos</div>
+  </div>
+  <div class="topbar-right">
+    <button class="theme-btn" onclick="toggleTheme()" title="Changer le thème">
+      <span id="theme-icon">&#9788;</span>
+    </button>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="main" id="main">
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE : HOME
+════════════════════════════════════════════════════════════ -->
+<section class="page active" id="page-home">
+  <div class="home-eyebrow">AI Assisted — Ingénierie &amp; Robotique</div>
+  <h1 class="home-name">Votre Nom<br><em>Ingénieur</em></h1>
+  <p class="home-role">Spécialisation : systèmes embarqués, robotique, conception mécatronique.</p>
+  <div class="home-divider"></div>
+  <p class="home-bio">
+    Étudiant ou professionnel en ingénierie, passionné par la <strong>conception de systèmes autonomes</strong>
+    et la <strong>robotique embarquée</strong>. Mes projets couvrent l'électronique, le firmware C++ et
+    la fabrication additive — de l'idée au prototype fonctionnel.
+    <br><br>
+    Ce portfolio regroupe mes réalisations techniques. Les textes et images sont modifiables directement.
+  </p>
+  <div class="tags">
+    <span class="tag">ESP32</span>
+    <span class="tag">Arduino / C++</span>
+    <span class="tag">Robotique</span>
+    <span class="tag">Systèmes embarqués</span>
+    <span class="tag">Impression 3D</span>
+    <span class="tag">Contrôle WiFi</span>
+    <span class="tag">I2C / PWM</span>
+    <span class="tag">Python</span>
+  </div>
+  <div class="home-cta">
+    <button class="btn primary" onclick="navigate('projects')">Voir les projets</button>
+    <button class="btn" onclick="navigate('contact')">Contact</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE : PROJECTS
+════════════════════════════════════════════════════════════ -->
+<section class="page" id="page-projects">
+  <div class="section-eyebrow">Portfolio</div>
+  <h2 class="section-title">Projets</h2>
+  <p class="section-sub">Réalisations techniques — prototypes, systèmes embarqués, robotique.</p>
+
+  <div class="project-grid">
+    <!-- PROJECT 1 -->
+    <button class="project-card" onclick="navigate('spider')">
+      <div>
+        <div class="project-card-title">Mini Spider Robot</div>
+        <div class="project-card-desc">Robot araignée quadrupède miniature contrôlé par WiFi. Conçu de A à Z : mécanique imprimée 3D, firmware Arduino C++, 8 servos via PCA9685 sur ESP32.</div>
+        <div class="project-stack">
+          <span class="stack-chip">ESP32</span>
+          <span class="stack-chip">PCA9685</span>
+          <span class="stack-chip">C++ / Arduino</span>
+          <span class="stack-chip">Impression 3D</span>
+          <span class="stack-chip">WiFi Control</span>
+        </div>
+        <div class="project-meta" style="margin-top:16px;">
+          <span class="project-meta-item">Statut <strong>En développement</strong></span>
+          <span class="project-meta-item">Domaine <strong>Robotique</strong></span>
+          <span class="project-meta-item">Année <strong>2025</strong></span>
+        </div>
+      </div>
+      <div class="project-arrow">&#8594;</div>
+    </button>
+
+    <!-- PROJECT 2 (placeholder) -->
+    <button class="project-card" onclick="navigate('project2')">
+      <div>
+        <div class="project-card-title">Projet 2</div>
+        <div class="project-card-desc">Description de votre deuxième projet. Remplacez ce texte par le contenu réel de votre réalisation.</div>
+        <div class="project-stack">
+          <span class="stack-chip">À définir</span>
+        </div>
+        <div class="project-meta" style="margin-top:16px;">
+          <span class="project-meta-item">Statut <strong>À venir</strong></span>
+          <span class="project-meta-item">Domaine <strong>—</strong></span>
+        </div>
+      </div>
+      <div class="project-arrow">&#8594;</div>
+    </button>
+
+    <!-- PROJECT 3 (placeholder) -->
+    <button class="project-card" onclick="navigate('project3')">
+      <div>
+        <div class="project-card-title">Projet 3</div>
+        <div class="project-card-desc">Description de votre troisième projet. Ce bloc est un modèle — dupliquez-le pour ajouter d'autres projets.</div>
+        <div class="project-stack">
+          <span class="stack-chip">À définir</span>
+        </div>
+        <div class="project-meta" style="margin-top:16px;">
+          <span class="project-meta-item">Statut <strong>À venir</strong></span>
+          <span class="project-meta-item">Domaine <strong>—</strong></span>
+        </div>
+      </div>
+      <div class="project-arrow">&#8594;</div>
+    </button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE : SPIDER ROBOT (Project Detail)
+════════════════════════════════════════════════════════════ -->
+<section class="page" id="page-spider">
+  <button class="back-btn" onclick="navigate('projects')">&#8592; &nbsp;Projets</button>
+
+  <div class="project-header">
+    <div class="project-header-label">Robotique — 2025</div>
+    <h2 class="project-header-title">Mini Spider Robot</h2>
+    <p class="project-header-desc">Robot araignée quadrupède miniature. Conception complète : châssis imprimé 3D, 8 servomoteurs, microcontrôleur ESP32 et contrôle sans fil via WiFi.</p>
+  </div>
+
+  <!-- QUICK SPECS -->
+  <div class="detail-grid">
+    <div class="detail-cell"><div class="detail-cell-label">Microcontrôleur</div><div class="detail-cell-value">ESP32-WROOM</div></div>
+    <div class="detail-cell"><div class="detail-cell-label">Servomoteurs</div><div class="detail-cell-value">8× SG90 / MG90S</div></div>
+    <div class="detail-cell"><div class="detail-cell-label">Driver PWM</div><div class="detail-cell-value">PCA9685 I2C</div></div>
+    <div class="detail-cell"><div class="detail-cell-label">Alimentation</div><div class="detail-cell-value">LiPo 11.1V 3S</div></div>
+    <div class="detail-cell"><div class="detail-cell-label">Régulation</div><div class="detail-cell-value">Hacheur Buck 5V</div></div>
+    <div class="detail-cell"><div class="detail-cell-label">Communication</div><div class="detail-cell-value">WiFi 802.11 b/g/n</div></div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tab-bar">
+    <button class="tab active" id="tab-gallery" onclick="switchTab('gallery')">Images</button>
+    <button class="tab" id="tab-hardware" onclick="switchTab('hardware')">Hardware</button>
+    <button class="tab" id="tab-software" onclick="switchTab('software')">Software</button>
+    <button class="tab" id="tab-wiring" onclick="switchTab('wiring')">Câblage</button>
+  </div>
+
+  <!-- TAB: GALLERY -->
+  <div class="tab-panel active" id="panel-gallery">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;">Photos du projet</div>
+      <button class="btn" style="font-size:.78rem;padding:7px 14px;" onclick="openModal()">+ Ajouter</button>
+    </div>
+    <div class="gallery-grid" id="galleryGrid">
+      <div class="gallery-cell" onclick="triggerChange(this)">
+        <div class="gallery-placeholder-cell">
+          <div style="font-size:.8rem;opacity:.4;">[ ]</div>
+          <div>Corps principal</div>
+        </div>
+        <div class="gallery-change-btn">Changer</div>
+      </div>
+      <div class="gallery-cell" onclick="triggerChange(this)">
+        <div class="gallery-placeholder-cell">
+          <div style="font-size:.8rem;opacity:.4;">[ ]</div>
+          <div>Coxa — Seg. 1</div>
+        </div>
+        <div class="gallery-change-btn">Changer</div>
+      </div>
+      <div class="gallery-cell" onclick="triggerChange(this)">
+        <div class="gallery-placeholder-cell">
+          <div style="font-size:.8rem;opacity:.4;">[ ]</div>
+          <div>Tibia — Seg. 2</div>
+        </div>
+        <div class="gallery-change-btn">Changer</div>
+      </div>
+      <div class="gallery-cell" onclick="triggerChange(this)">
+        <div class="gallery-placeholder-cell">
+          <div style="font-size:.8rem;opacity:.4;">[ ]</div>
+          <div>ESP32 + PCA9685</div>
+        </div>
+        <div class="gallery-change-btn">Changer</div>
+      </div>
+      <div class="gallery-cell" onclick="triggerChange(this)">
+        <div class="gallery-placeholder-cell">
+          <div style="font-size:.8rem;opacity:.4;">[ ]</div>
+          <div>Assemblage complet</div>
+        </div>
+        <div class="gallery-change-btn">Changer</div>
+      </div>
+      <div class="gallery-add-cell" onclick="openModal()">+</div>
     </div>
   </div>
 
-  <div class="nav-group">
-    <div class="nav-title">Projets Réalisés</div>
-    <div class="nav-item" id="nav-spider" onclick="showPage('spider')">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"></circle><path d="M16 12a4 4 0 0 1-8 0"></path><path d="M12 4v4"></path><path d="M12 16v4"></path><path d="M4 12h4"></path><path d="M16 12h4"></path></svg>
-      Mini Spider Robot
-    </div>
-    <!-- Vous pouvez ajouter plus de projets ici -->
+  <!-- TAB: HARDWARE -->
+  <div class="tab-panel" id="panel-hardware">
+    <table class="component-table">
+      <thead>
+        <tr>
+          <th>Composant</th>
+          <th>Référence</th>
+          <th>Rôle &amp; Justification</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="td-name">ESP32</td>
+          <td class="td-model">ESP32-WROOM-32</td>
+          <td>Microcontrôleur principal. WiFi intégré pour le contrôle sans fil, 240 MHz dual-core, support I2C natif sur GPIO 21/22. Choisi pour son WiFi intégré vs Arduino (pas de WiFi) et son écosystème Arduino complet.</td>
+        </tr>
+        <tr>
+          <td class="td-name">PCA9685</td>
+          <td class="td-model">Adafruit 16-Ch PWM</td>
+          <td>Driver PWM 16 canaux via I2C. Génère les signaux 50Hz pour les 8 servos en soulageant les timers internes de l'ESP32. Résolution 12 bits. Adresse I2C : 0x40.</td>
+        </tr>
+        <tr>
+          <td class="td-name">Servomoteurs × 8</td>
+          <td class="td-model">SG90 / MG90S</td>
+          <td>4 servos de base (canaux 0–3, rotation horizontale) + 4 servos de jambe (canaux 4–7, élévation). Couple 1.8 kg/cm, PWM 150–600, tension 5–6V, poids 9g chacun.</td>
+        </tr>
+        <tr>
+          <td class="td-name">Batterie LiPo 3S</td>
+          <td class="td-model">11.1V / ~1500 mAh</td>
+          <td>Source d'alimentation principale. Haute densité énergétique, 3 cellules 3.7V en série. Décharge 20C minimum pour alimenter les pics de courant servo (estimation 4.8A crête sous charge).</td>
+        </tr>
+        <tr>
+          <td class="td-name">Hacheur Buck</td>
+          <td class="td-model">LM2596 / MP2307</td>
+          <td>Convertit 11.1V → 5–6V pour les servos. Efficacité ~90% contre ~35% pour un régulateur linéaire. Un 7805 dissiperait 30W de chaleur — inadmissible. Sortie réglable, protection OVP/OCP.</td>
+        </tr>
+        <tr>
+          <td class="td-name">Interrupteur</td>
+          <td class="td-model">SPST Rocker 10A</td>
+          <td>Coupe l'alimentation entre la batterie et le hacheur. Sécurité : évite la décharge accidentelle. Courant nominal ≥ 5A pour absorber les pics au démarrage.</td>
+        </tr>
+        <tr>
+          <td class="td-name">Châssis + pattes</td>
+          <td class="td-model">PLA / PETG — FDM</td>
+          <td>Corps, coxa, tibia et effecteurs imprimés en 3D. PLA : rigidité élevée, densité 1.24 g/cm³. Effecteurs TPU Shore A90 pour adhérence sol. Épaisseur châssis ≥ 4 mm.</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-</nav>
 
-<!-- MAIN CONTENT -->
-<main class="main-content" id="main" onclick="closeSidebarMobile()">
-
-  <!-- PAGE ACCUEIL -->
-  <section class="page active" id="page-home">
-    <h1>Ingénieur Systèmes & Robotique</h1>
-    <p>Bienvenue sur mon portfolio professionnel. Je suis un ingénieur passionné par le développement logiciel, la conception de systèmes embarqués et l'automatisation. Mon objectif est de concevoir des solutions robustes, maintenables et élégantes.</p>
-    <p>Vous pouvez explorer mes projets techniques en utilisant le menu latéral. Chaque projet décrit en détail l'approche technique, du prototypage matériel au déploiement du code (Firmware, API, Algorithmes).</p>
-    
-    <div class="card" style="margin-top: 32px">
-        <div class="card-header">Compétences Techniques</div>
-        <div class="card-body">
-            <ul>
-                <li style="margin-bottom: 6px"><strong>Langages :</strong> C/C++, Python, JavaScript/HTML/CSS</li>
-                <li style="margin-bottom: 6px"><strong>Matériel :</strong> Microcontrôleurs (ESP32, STM32, Arduino), Conception de PCBs, I2C/SPI</li>
-                <li style="margin-bottom: 6px"><strong>Outils CAO & Impression 3D :</strong> Fusion 360, Modélisation paramétrique</li>
-                <li><strong>Logiciel :</strong> Architecture logicielle propre, Intégration Continue, Algorithmique embarquée</li>
-            </ul>
-        </div>
-    </div>
-  </section>
-
-  <!-- PAGE CONTACT -->
-  <section class="page" id="page-contact">
-    <h1>Me Contacter</h1>
-    <p>Je suis toujours ouvert à la discussion sur des projets d'ingénierie, des collaborations techniques ou des opportunités professionnelles.</p>
-    
-    <div class="card" style="margin-top: 24px;">
-      <div class="card-header">Informations de contact</div>
-      <div class="card-body" style="font-family: var(--font-mono); font-size: 0.95rem;">
-        <div style="margin-bottom: 12px">Email   : <a href="mailto:contact@votre-email.com" style="color: var(--accent); text-decoration: none;">contact@votre-email.com</a></div>
-        <div style="margin-bottom: 12px">LinkedIn: <a href="#" style="color: var(--accent); text-decoration: none;">linkedin.com/in/votre-profil</a></div>
-        <div>GitHub  : <a href="#" style="color: var(--accent); text-decoration: none;">github.com/votre-pseudo</a></div>
+  <!-- TAB: SOFTWARE -->
+  <div class="tab-panel" id="panel-software">
+    <!-- BLOCK 1 -->
+    <div class="code-wrapper">
+      <div class="code-topbar">
+        <span class="code-filename">spider_robot.ino</span>
+        <span class="code-lang">C++ / Arduino</span>
       </div>
-    </div>
-  </section>
+      <div class="annotated">
+        <div class="code-pane"><pre><span class="pp">#include</span> <span class="str">&lt;Wire.h&gt;</span>
+<span class="pp">#include</span> <span class="str">&lt;Adafruit_PWMServoDriver.h&gt;</span>
 
-  <!-- PAGE MINI SPIDER ROBOT -->
-  <section class="page" id="page-spider">
-    <h1>Mini Spider Robot</h1>
-    <p>Documentation technique du robot araignée miniature (Quadrupède). Ce projet englobe la conception CAO, l'assemblage électronique de précision et le développement d'un firmware orienté objet C++ avec un serveur API WiFi intégré sur un ESP32.</p>
+<span class="cm">// Objet pilote PCA9685 (adresse I2C 0x40 par défaut)</span>
+<span class="kw">Adafruit_PWMServoDriver</span> pwm = <span class="kw">Adafruit_PWMServoDriver</span>();
 
-    <!-- Navigation des sous-onglets du projet -->
-    <div class="project-tabs">
-      <button class="tab-btn active" id="tabbtn-hw" onclick="showTab('hw')">Hardware & Électronique</button>
-      <button class="tab-btn" id="tabbtn-sw" onclick="showTab('sw')">Firmware & Code</button>
-      <button class="tab-btn" id="tabbtn-gal" onclick="showTab('gal')">Modèles CAO & Galerie</button>
-    </div>
-
-    <!-- ONGLET HARDWARE -->
-    <div class="tab-pane active" id="tab-hw">
-      <h2>Architecture Matérielle</h2>
-      <div class="grid">
-        <div class="card">
-          <div class="card-header">ESP32 DevKit v1</div>
-          <div class="card-meta">Microcontrôleur WiFi</div>
-          <div class="card-body">Cerveau du robot. Gère la logique cinématique, la communication I2C, et héberge le point d'accès WiFi (Serveur Web Asynchrone) pour le contrôle à distance. Choisi pour son double cœur et son horloge à 240 MHz.</div>
-        </div>
-        <div class="card">
-          <div class="card-header">PCA9685</div>
-          <div class="card-meta">Driver PWM 16 Canaux</div>
-          <div class="card-body">Indispensable pour générer simultanément et précisément 8 signaux PWM à 50Hz pour les servomoteurs (posture & marche), libérant ainsi les timers matériels de l'ESP32. Connecté en I2C.</div>
-        </div>
-        <div class="card">
-          <div class="card-header">Unité de Puissance</div>
-          <div class="card-meta">LiPo 3S 11.1V + Buck regulateur</div>
-          <div class="card-body">Un convertisseur Step-Down hacheur abaisse la tension de 11.1V à 5.5V pour fournir un courant critique (jusqu'à 5 ampères crête) aux servos lors des démarrages de la marche, avec un excellent rendement énergétique.</div>
-        </div>
-      </div>
-
-      <h2>Topologie du bus I2C</h2>
-      <table>
-        <thead><tr><th>Broche ESP32</th><th>Cible PCA9685</th><th>Description Fonctionnelle</th></tr></thead>
-        <tbody>
-          <tr><td>GPIO 21</td><td>SDA</td><td>Ligne de données série (Serial Data Line)</td></tr>
-          <tr><td>GPIO 22</td><td>SCL</td><td>Ligne d'horloge série (Serial Clock Line)</td></tr>
-          <tr><td>3.3V</td><td>VCC</td><td>Tension logique (Pull-up virtuels)</td></tr>
-          <tr><td>GND</td><td>GND</td><td>Référence de masse commune entre le contrôleur et les actionneurs</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- ONGLET SOFTWARE -->
-    <div class="tab-pane" id="tab-sw">
-      <h2>Conception du Firmware</h2>
-      <p>Le code écrit en C++ orchestre la cinématique inverse (IK) simplifiée et la gestion des requêtes asynchrones en environnement critique de temps (temps réel souple).</p>
-
-      <div class="code-block">
-        <div class="code-header">spider_cinematics.cpp (Extrait du déplacement)</div>
-        <div class="code-content"><pre>#include &lt;Wire.h&gt;
-#include &lt;Adafruit_PWMServoDriver.h&gt;
-
-Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver(0x40);
-
-// Constantes de calibrage de marche
-const int HOME_BASE = 90;
-const int HOME_LEG = 90;
-const int LIFT_ANGLE = 30;
-
-// Exécution séquentielle de mouvement segmentaire
-void stepLeg(int legId, int targetHeading) {
-  // 1. Phae de levée (Dégagement du sol)
-  setServoAngle(legId, SERVO_LEG, HOME_LEG - LIFT_ANGLE);
-  delay(100); // Attente de la stabilisation mécanique
-  
-  // 2. Phase de rotation de la base (Orientation Z)
-  setServoAngle(legId, SERVO_BASE, targetHeading);
-  delay(100);
-  
-  // 3. Phase d'atterrissage
-  setServoAngle(legId, SERVO_LEG, HOME_LEG);
-}</pre></div>
-      </div>
-
-      <h2>Interface REST API Exposée</h2>
-      <table>
-        <thead><tr><th>Type</th><th>Endpoint de commande</th><th>Aperçu de la réponse / du résultat routé</th></tr></thead>
-        <tbody>
-          <tr><td>GET</td><td>/walk</td><td>Passe la machine d'état (FSM) au mode déplacement continu vers l'avant.</td></tr>
-          <tr><td>GET</td><td>/stop</td><td>Interruption propre de l'itération de marche et application d'un repos d'architecture.</td></tr>
-          <tr><td>POST</td><td>/speed (Payload JSON)</td><td>Ajustement instantané de la configuration de délai de l'algorithme "Creep Gait".</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- ONGLET GALERIE -->
-    <div class="tab-pane" id="tab-gal">
-      <h2>Composants et Assemblages CAO</h2>
-      <p>Aperçu de chaque module mécanique, imprimé intégralement en 3D avec résine haute rigidité ou en PLA+ selon le domaine de contrainte.</p>
-      
-      <div class="grid">
-        <div class="card" style="text-align: center;">
-          <div style="width:100%; height: 160px; background: var(--bg-sidebar); border: 1px dashed var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; color: var(--text-muted); font-family: var(--font-mono);">[Espace Image Libre]</div>
-          <div class="card-header" style="font-size: 1rem">Châssis Principal</div>
-          <div class="card-meta">Pièce de liaison structurelle</div>
-        </div>
-        <div class="card" style="text-align: center;">
-          <div style="width:100%; height: 160px; background: var(--bg-sidebar); border: 1px dashed var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; color: var(--text-muted); font-family: var(--font-mono);">[Espace Image Libre]</div>
-          <div class="card-header" style="font-size: 1rem">Coxa & Tibia</div>
-          <div class="card-meta">Assemblage Cinématique</div>
-        </div>
-        <div class="card" style="text-align: center;">
-          <div style="width:100%; height: 160px; background: var(--bg-sidebar); border: 1px dashed var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; color: var(--text-muted); font-family: var(--font-mono);">[Espace Image Libre]</div>
-          <div class="card-header" style="font-size: 1rem">Effecteurs TPU Flexibles</div>
-          <div class="card-meta">Absorption et Adhérence</div>
+<span class="cm">// Constantes PWM — ajuster selon vos servos</span>
+<span class="pp">#define</span> SERVO_MIN  <span class="num">150</span>   <span class="cm">// 0 degrés</span>
+<span class="pp">#define</span> SERVO_MAX  <span class="num">600</span>   <span class="cm">// 180 degrés</span>
+<span class="pp">#define</span> FREQUENCY   <span class="num">50</span>   <span class="cm">// Hz — standard servo</span></pre></div>
+        <div class="expl-pane">
+          <div class="expl-label">// Imports &amp; configuration</div>
+          <div class="expl-body">
+            <code>Wire.h</code> : bibliothèque I2C Arduino. Permet la communication avec le PCA9685 sur 2 fils (SDA/SCL).<br><br>
+            <code>SERVO_MIN/MAX</code> : plage de ticks (sur 4096 total) correspondant à 0° et 180°. Valeurs typiques SG90 : 150–600. Ajuster si le servo ne va pas en butée.
+          </div>
         </div>
       </div>
     </div>
-  </section>
 
-</main>
+    <!-- BLOCK 2 -->
+    <div class="code-wrapper">
+      <div class="code-topbar">
+        <span class="code-filename">Mapping canaux &amp; paramètres</span>
+      </div>
+      <div class="annotated">
+        <div class="code-pane"><pre><span class="cm">// BASE_SERVOS : rotation horizontale (axe Z)</span>
+<span class="cm">// LEG_SERVOS  : élévation verticale (axe X)</span>
+<span class="cm">// Index : 0=FL, 1=FR, 2=BL, 3=BR</span>
+<span class="kw">const int</span> BASE_SERVOS[<span class="num">4</span>] = {<span class="num">0</span>, <span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>};
+<span class="kw">const int</span>  LEG_SERVOS[<span class="num">4</span>] = {<span class="num">4</span>, <span class="num">5</span>, <span class="num">6</span>, <span class="num">7</span>};
 
-<script>
-// Toggle Sidebar on mobile
-const sidebar = document.getElementById('sidebar');
-function toggleSidebar() {
-  sidebar.classList.toggle('open');
+<span class="kw">int</span> stepDelay  = <span class="num">150</span>;  <span class="cm">// ms entre mouvements</span>
+<span class="kw">int</span> liftHeight = <span class="num">30</span>;   <span class="cm">// degrés de levée</span>
+<span class="kw">int</span> stepLength = <span class="num">30</span>;   <span class="cm">// amplitude d'un pas</span>
+<span class="kw">int</span> baseHome   = <span class="num">90</span>;   <span class="cm">// position neutre</span>
+<span class="kw">int</span> legHome    = <span class="num">90</span>;</pre></div>
+        <div class="expl-pane">
+          <div class="expl-label">// Mapping &amp; paramètres cinématiques</div>
+          <div class="expl-body">
+            Deux tableaux associent chaque patte (FL, FR, BL, BR) à ses deux canaux PCA9685 : un pour la rotation horizontale (base) et un pour l'élévation (jambe).<br><br>
+            <code>stepDelay=150ms</code> : délai entre chaque mouvement. Augmenter pour plus de fluidité, réduire pour plus de vitesse.<br><br>
+            <code>liftHeight=30°</code> : la patte monte de 90°→60° lors de la levée.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOCK 3 -->
+    <div class="code-wrapper">
+      <div class="code-topbar">
+        <span class="code-filename">setup() &amp; setServoAngle()</span>
+      </div>
+      <div class="annotated">
+        <div class="code-pane"><pre><span class="kw">void</span> <span class="fn">setup</span>() {
+  Serial.<span class="fn">begin</span>(<span class="num">115200</span>);
+  Wire.<span class="fn">begin</span>(<span class="num">21</span>, <span class="num">22</span>);       <span class="cm">// SDA=21, SCL=22</span>
+  pwm.<span class="fn">begin</span>();
+  pwm.<span class="fn">setOscillatorFrequency</span>(<span class="num">27000000</span>);
+  pwm.<span class="fn">setPWMFreq</span>(FREQUENCY);
+  <span class="fn">standUp</span>();
+  <span class="fn">delay</span>(<span class="num">2000</span>);
 }
-function closeSidebarMobile() {
-  if (window.innerWidth <= 768) {
-    sidebar.classList.remove('open');
+
+<span class="kw">void</span> <span class="fn">setServoAngle</span>(<span class="kw">int</span> ch, <span class="kw">int</span> angle) {
+  angle = <span class="fn">constrain</span>(angle, <span class="num">0</span>, <span class="num">180</span>);
+  <span class="kw">int</span> pulse = <span class="fn">map</span>(angle, <span class="num">0</span>, <span class="num">180</span>, SERVO_MIN, SERVO_MAX);
+  pwm.<span class="fn">setPWM</span>(ch, <span class="num">0</span>, pulse);
+}</pre></div>
+        <div class="expl-pane">
+          <div class="expl-label">// Initialisation &amp; commande servo</div>
+          <div class="expl-body">
+            <code>Wire.begin(21, 22)</code> : démarre le bus I2C sur les GPIO hardware ESP32. GPIO21=SDA, GPIO22=SCL.<br><br>
+            <code>setOscillatorFrequency(27000000)</code> : calibre l'oscillateur PCA9685 à 27 MHz pour compenser les dérives de timing internes.<br><br>
+            <code>setServoAngle</code> : convertit un angle 0–180° en tick PWM via interpolation linéaire, avec protection hardware (<code>constrain</code>).
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOCK 4 -->
+    <div class="code-wrapper">
+      <div class="code-topbar">
+        <span class="code-filename">walkForward() &amp; moveLeg()</span>
+      </div>
+      <div class="annotated">
+        <div class="code-pane"><pre><span class="cm">// Creep gait : 1 patte à la fois → stabilité statique</span>
+<span class="kw">void</span> <span class="fn">walkForward</span>() {
+  <span class="fn">moveLeg</span>(<span class="num">0</span>); <span class="fn">moveLeg</span>(<span class="num">3</span>);
+  <span class="fn">moveLeg</span>(<span class="num">1</span>); <span class="fn">moveLeg</span>(<span class="num">2</span>);
+
+  <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt;= stepLength; i += <span class="num">5</span>) {
+    <span class="fn">setServoAngle</span>(BASE_SERVOS[<span class="num">0</span>], (baseHome+stepLength/<span class="num">2</span>)-i);
+    <span class="fn">setServoAngle</span>(BASE_SERVOS[<span class="num">2</span>], (baseHome+stepLength/<span class="num">2</span>)-i);
+    <span class="fn">setServoAngle</span>(BASE_SERVOS[<span class="num">1</span>], (baseHome-stepLength/<span class="num">2</span>)+i);
+    <span class="fn">setServoAngle</span>(BASE_SERVOS[<span class="num">3</span>], (baseHome-stepLength/<span class="num">2</span>)+i);
+    <span class="fn">delay</span>(<span class="num">20</span>);
   }
 }
 
-// Page Navigation
-function showPage(pageId) {
-  // Hide all pages
-  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-  // Show target page
-  document.getElementById('page-' + pageId).classList.add('active');
-  
-  // Update sidebar active states
-  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-  document.getElementById('nav-' + pageId).classList.add('active');
-  
-  closeSidebarMobile();
+<span class="kw">void</span> <span class="fn">moveLeg</span>(<span class="kw">int</span> idx) {
+  <span class="kw">int</span> fwd = (idx==<span class="num">0</span>||idx==<span class="num">2</span>)
+    ? baseHome+stepLength/<span class="num">2</span>
+    : baseHome-stepLength/<span class="num">2</span>;
+  <span class="cm">// 1. Lever</span>
+  <span class="fn">setServoAngle</span>(LEG_SERVOS[idx], legHome-liftHeight);
+  <span class="fn">delay</span>(stepDelay/<span class="num">2</span>);
+  <span class="cm">// 2. Avancer dans les airs</span>
+  <span class="fn">setServoAngle</span>(BASE_SERVOS[idx], fwd);
+  <span class="fn">delay</span>(stepDelay/<span class="num">2</span>);
+  <span class="cm">// 3. Poser</span>
+  <span class="fn">setServoAngle</span>(LEG_SERVOS[idx], legHome);
+  <span class="fn">delay</span>(stepDelay);
+}</pre></div>
+        <div class="expl-pane">
+          <div class="expl-label">// Algorithme de marche</div>
+          <div class="expl-body">
+            <strong>Creep Gait</strong> : une seule patte se lève à la fois, les 3 autres restent au sol. Stabilité statique garantie à tout moment. Séquence diagonale : FL→BR→FR→BL.<br><br>
+            <strong>Phase propulsion</strong> : après repositionnement des 4 pattes, tous les servos de base se déplacent simultanément en sens opposé selon le côté (montage miroir gauche/droite).<br><br>
+            <code>moveLeg</code> : 3 phases — lever (60°), avancer en l'air (forwardAngle), poser (90°).
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: WIRING -->
+  <div class="tab-panel" id="panel-wiring">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-bottom:16px;">ESP32 → PCA9685 — Bus I2C</div>
+    <table class="wire-table">
+      <thead><tr><th>ESP32 GPIO</th><th>PCA9685</th><th>Rôle</th></tr></thead>
+      <tbody>
+        <tr><td>GPIO 21</td><td>SDA</td><td>I2C Data</td></tr>
+        <tr><td>GPIO 22</td><td>SCL</td><td>I2C Clock</td></tr>
+        <tr><td>3.3V</td><td>VCC</td><td>Alimentation logique</td></tr>
+        <tr><td>GND</td><td>GND</td><td>Masse commune</td></tr>
+        <tr><td>—</td><td>V+</td><td>5–6V depuis hacheur (section 2.5mm²)</td></tr>
+      </tbody>
+    </table>
+
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-bottom:16px;">Mapping canaux PCA9685 → Servos</div>
+    <table class="wire-table">
+      <thead><tr><th>Canal</th><th>Variable</th><th>Patte</th><th>Axe</th></tr></thead>
+      <tbody>
+        <tr><td>CH 0</td><td>BASE_SERVOS[0]</td><td>Avant Gauche (FL)</td><td>Rotation Z</td></tr>
+        <tr><td>CH 1</td><td>BASE_SERVOS[1]</td><td>Avant Droit (FR)</td><td>Rotation Z</td></tr>
+        <tr><td>CH 2</td><td>BASE_SERVOS[2]</td><td>Arrière Gauche (BL)</td><td>Rotation Z</td></tr>
+        <tr><td>CH 3</td><td>BASE_SERVOS[3]</td><td>Arrière Droit (BR)</td><td>Rotation Z</td></tr>
+        <tr><td>CH 4</td><td>LEG_SERVOS[0]</td><td>Avant Gauche (FL)</td><td>Élévation X</td></tr>
+        <tr><td>CH 5</td><td>LEG_SERVOS[1]</td><td>Avant Droit (FR)</td><td>Élévation X</td></tr>
+        <tr><td>CH 6</td><td>LEG_SERVOS[2]</td><td>Arrière Gauche (BL)</td><td>Élévation X</td></tr>
+        <tr><td>CH 7</td><td>LEG_SERVOS[3]</td><td>Arrière Droit (BR)</td><td>Élévation X</td></tr>
+      </tbody>
+    </table>
+
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-bottom:16px;">Chaîne d'alimentation</div>
+    <table class="wire-table">
+      <thead><tr><th>Étape</th><th>De</th><th>Vers</th><th>Tension</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>LiPo 3S</td><td>Interrupteur</td><td>11.1V</td></tr>
+        <tr><td>2</td><td>Interrupteur</td><td>Hacheur Buck (Vin)</td><td>11.1V</td></tr>
+        <tr><td>3</td><td>Hacheur Buck (Vout)</td><td>PCA9685 V+</td><td>5–6V réglable</td></tr>
+        <tr><td>4</td><td>Hacheur Buck (Vout)</td><td>ESP32 VIN</td><td>5V</td></tr>
+        <tr><td>5</td><td>ESP32 3.3V</td><td>PCA9685 VCC</td><td>3.3V logique</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE : PROJECT 2 (template)
+════════════════════════════════════════════════════════════ -->
+<section class="page" id="page-project2">
+  <button class="back-btn" onclick="navigate('projects')">&#8592; &nbsp;Projets</button>
+  <div class="project-header">
+    <div class="project-header-label">À définir</div>
+    <h2 class="project-header-title">Projet 2</h2>
+    <p class="project-header-desc">Remplacez cette description par le contenu de votre deuxième projet. Ce modèle est prêt à être rempli.</p>
+  </div>
+  <div class="detail-grid">
+    <div class="detail-cell"><div class="detail-cell-label">Statut</div><div class="detail-cell-value">À venir</div></div>
+    <div class="detail-cell"><div class="detail-cell-label">Domaine</div><div class="detail-cell-value">—</div></div>
+    <div class="detail-cell"><div class="detail-cell-label">Année</div><div class="detail-cell-value">—</div></div>
+  </div>
+  <p style="color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.8rem;">Contenu à compléter.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE : PROJECT 3 (template)
+════════════════════════════════════════════════════════════ -->
+<section class="page" id="page-project3">
+  <button class="back-btn" onclick="navigate('projects')">&#8592; &nbsp;Projets</button>
+  <div class="project-header">
+    <div class="project-header-label">À définir</div>
+    <h2 class="project-header-title">Projet 3</h2>
+    <p class="project-header-desc">Remplacez cette description par le contenu de votre troisième projet.</p>
+  </div>
+  <div class="detail-grid">
+    <div class="detail-cell"><div class="detail-cell-label">Statut</div><div class="detail-cell-value">À venir</div></div>
+    <div class="detail-cell"><div class="detail-cell-label">Domaine</div><div class="detail-cell-value">—</div></div>
+    <div class="detail-cell"><div class="detail-cell-label">Année</div><div class="detail-cell-value">—</div></div>
+  </div>
+  <p style="color:var(--text3);font-family:'JetBrains Mono',monospace;font-size:.8rem;">Contenu à compléter.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PAGE : CONTACT
+════════════════════════════════════════════════════════════ -->
+<section class="page" id="page-contact">
+  <div class="section-eyebrow">Contact</div>
+  <h2 class="section-title">Me contacter</h2>
+  <p class="section-sub">Pour toute collaboration, question technique ou opportunité professionnelle.</p>
+
+  <div class="contact-grid">
+    <div class="contact-item">
+      <div class="contact-item-label">Email</div>
+      <div class="contact-item-value"><a href="mailto:votre@email.com">votre@email.com</a></div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-item-label">LinkedIn</div>
+      <div class="contact-item-value"><a href="#">linkedin.com/in/votre-profil</a></div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-item-label">GitHub</div>
+      <div class="contact-item-value"><a href="#">github.com/votre-username</a></div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-item-label">Localisation</div>
+      <div class="contact-item-value">Ville, Pays</div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-item-label">Disponibilité</div>
+      <div class="contact-item-value">Ouvert aux collaborations</div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-item-label">Langue</div>
+      <div class="contact-item-value">Français / English</div>
+    </div>
+  </div>
+
+  <div class="contact-note">
+    Réponse sous 48h en semaine. Pour les projets techniques, précisez le domaine, le contexte et l'objectif dans votre message afin que la discussion soit productive dès le premier échange.
+  </div>
+</section>
+
+</main>
+
+<!-- ADD PHOTO MODAL -->
+<div class="modal-backdrop" id="modal">
+  <div class="modal">
+    <div class="modal-title">Ajouter une photo</div>
+    <label class="field-label">Nom</label>
+    <input type="text" class="field-input" id="m-name" placeholder="Corps principal...">
+    <label class="field-label">Catégorie</label>
+    <input type="text" class="field-input" id="m-cat" placeholder="Mécanique, Électronique...">
+    <div class="drop-zone" id="dropzone" onclick="document.getElementById('filein').click()">
+      Glisser une image ici ou cliquer
+      <input type="file" id="filein" accept="image/*" style="display:none" onchange="handleFile(this)">
+    </div>
+    <img id="m-preview" class="modal-preview">
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Annuler</button>
+      <button class="btn primary" onclick="confirmAdd()">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── THEME ──────────────────────────────────────────────── */
+function toggleTheme(){
+  const h=document.documentElement;
+  const isDark=h.getAttribute('data-theme')==='dark';
+  h.setAttribute('data-theme',isDark?'light':'dark');
+  document.getElementById('theme-icon').innerHTML=isDark?'&#9790;':'&#9788;';
 }
 
-// Project Tab Navigation (for Mini Spider)
-function showTab(tabId) {
-  // Update button states
-  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-  document.getElementById('tabbtn-' + tabId).classList.add('active');
-  
-  // Show right pane
-  document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
-  document.getElementById('tab-' + tabId).classList.add('active');
+/* ── SIDEBAR ────────────────────────────────────────────── */
+let sidebarOpen=false;
+function toggleSidebar(){sidebarOpen?closeSidebar():openSidebar();}
+function openSidebar(){
+  sidebarOpen=true;
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('overlay').classList.add('show');
+  document.getElementById('burger').classList.add('active');
+}
+function closeSidebar(){
+  sidebarOpen=false;
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+  document.getElementById('burger').classList.remove('active');
 }
 
-// Theme Toggle
-function toggleTheme() {
-  const root = document.documentElement;
-  const current = root.getAttribute('data-theme');
-  root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+/* ── NAVIGATION ─────────────────────────────────────────── */
+const topLabels={
+  home:'À propos',projects:'Projets',
+  spider:'Mini Spider Robot',project2:'Projet 2',project3:'Projet 3',
+  contact:'Contact'
+};
+const navMap={
+  home:'home',projects:'projects',
+  spider:'projects',project2:'projects',project3:'projects',
+  contact:'contact'
+};
+let currentPage='home';
+
+function navigate(page){
+  if(page===currentPage&&document.getElementById('page-'+page)){}
+  const cur=document.getElementById('page-'+currentPage);
+  if(cur) cur.classList.remove('active');
+  currentPage=page;
+  const next=document.getElementById('page-'+page);
+  if(next) next.classList.add('active');
+
+  // topbar label
+  document.getElementById('topbar-label').textContent=topLabels[page]||page;
+
+  // sidebar active state
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const navActive=document.getElementById('nav-'+navMap[page]);
+  if(navActive) navActive.classList.add('active');
+
+  // subnav visibility
+  const sub=document.getElementById('project-subnav');
+  if(page==='projects'||page==='spider'||page==='project2'||page==='project3'){
+    sub.style.display='block';
+  }
+  document.querySelectorAll('.nav-project-sub').forEach(n=>n.classList.remove('active'));
+  const subActive=document.getElementById('subnav-'+page);
+  if(subActive) subActive.classList.add('active');
+
+  closeSidebar();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
+
+/* ── PROJECT TABS ───────────────────────────────────────── */
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  document.getElementById('panel-'+name).classList.add('active');
+}
+
+/* ── GALLERY ────────────────────────────────────────────── */
+let pendingImg=null;
+
+function openModal(){
+  pendingImg=null;
+  document.getElementById('m-name').value='';
+  document.getElementById('m-cat').value='';
+  document.getElementById('m-preview').style.display='none';
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+
+function handleFile(input){
+  if(!input.files[0]) return;
+  const r=new FileReader();
+  r.onload=e=>{
+    pendingImg=e.target.result;
+    const prev=document.getElementById('m-preview');
+    prev.src=pendingImg;prev.style.display='block';
+  };
+  r.readAsDataURL(input.files[0]);
+}
+
+// drag & drop
+const dz=document.getElementById('dropzone');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('dragover');});
+dz.addEventListener('dragleave',()=>dz.classList.remove('dragover'));
+dz.addEventListener('drop',e=>{
+  e.preventDefault();dz.classList.remove('dragover');
+  const f=e.dataTransfer.files[0];
+  if(f&&f.type.startsWith('image/')){
+    const r=new FileReader();
+    r.onload=ev=>{
+      pendingImg=ev.target.result;
+      const prev=document.getElementById('m-preview');
+      prev.src=pendingImg;prev.style.display='block';
+    };
+    r.readAsDataURL(f);
+  }
+});
+
+function confirmAdd(){
+  const name=document.getElementById('m-name').value||'Photo';
+  const cat=document.getElementById('m-cat').value||'';
+  const grid=document.getElementById('galleryGrid');
+  const addCell=grid.querySelector('.gallery-add-cell');
+  const cell=document.createElement('div');
+  cell.className='gallery-cell';
+  cell.onclick=()=>triggerChange(cell);
+  if(pendingImg){
+    cell.innerHTML=`<img src="${pendingImg}" style="width:100%;height:100%;object-fit:cover;display:block;">
+      <div class="gallery-change-btn">Changer</div>`;
+  } else {
+    cell.innerHTML=`<div class="gallery-placeholder-cell">
+      <div style="font-size:.8rem;opacity:.4;">[ ]</div><div>${name}</div></div>
+      <div class="gallery-change-btn">Changer</div>`;
+  }
+  grid.insertBefore(cell,addCell);
+  closeModal();
+}
+
+function triggerChange(cell){
+  const inp=document.createElement('input');
+  inp.type='file';inp.accept='image/*';
+  inp.onchange=()=>{
+    if(!inp.files[0]) return;
+    const r=new FileReader();
+    r.onload=e=>{
+      const img=cell.querySelector('img')||document.createElement('img');
+      const ph=cell.querySelector('.gallery-placeholder-cell');
+      if(ph) ph.remove();
+      img.src=e.target.result;
+      img.style.cssText='width:100%;height:100%;object-fit:cover;display:block;';
+      if(!cell.querySelector('img')) cell.insertBefore(img,cell.firstChild);
+    };
+    r.readAsDataURL(inp.files[0]);
+  };
+  inp.click();
+}
+
+// close modal on backdrop click
+document.getElementById('modal').addEventListener('click',function(e){
+  if(e.target===this) closeModal();
+});
 </script>
 </body>
 </html>
