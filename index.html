@@ -7,122 +7,73 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
-/* ─── TOKENS ──────────────────────────────────── */
 :root[data-theme="dark"]{
   --bg:#0a0a0f;--bg2:#111117;--bg3:#18181f;--border:#25252f;
   --text:#f2f2f5;--text2:#9090a8;--text3:#4a4a62;
   --accent:#f5c518;--accent2:#d4a017;--accent-dim:rgba(245,197,24,.1);
   --mauve:#9d7fe3;--mauve-dim:rgba(157,127,227,.1);
-  --surface:#111117;--surface2:#1a1a24;
-  --card:#16161e;
+  --surface:#111117;--surface2:#1a1a24;--card:#16161e;
 }
 :root[data-theme="light"]{
   --bg:#f5f5f0;--bg2:#ffffff;--bg3:#ebebeb;--border:#dcdcd0;
   --text:#0f0f14;--text2:#5a5a70;--text3:#aaaabc;
   --accent:#d4a017;--accent2:#b8880f;--accent-dim:rgba(212,160,23,.1);
   --mauve:#7c5cbf;--mauve-dim:rgba(124,92,191,.08);
-  --surface:#ffffff;--surface2:#f0f0eb;
-  --card:#ffffff;
+  --surface:#ffffff;--surface2:#f0f0eb;--card:#ffffff;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s;}
 button,a{cursor:pointer;font-family:inherit;text-decoration:none;color:inherit;}
-
-/* ─── SCROLLBAR ───────────────────────────────── */
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 ::-webkit-scrollbar-thumb:hover{background:var(--accent);}
 
-/* ─── TOPBAR ──────────────────────────────────── */
-.topbar{
-  position:fixed;top:0;left:0;right:0;height:54px;z-index:300;
-  background:var(--bg2);border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 24px;
-  transition:background .3s,border-color .3s;
-}
+/* TOPBAR */
+.topbar{position:fixed;top:0;left:0;right:0;height:54px;z-index:300;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;transition:background .3s,border-color .3s;}
 .topbar-left{display:flex;align-items:center;gap:14px;}
-.burger{
-  width:36px;height:36px;background:none;
-  border:1px solid var(--border);border-radius:5px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
-  transition:border-color .2s,background .2s;
-}
+.burger{width:36px;height:36px;background:none;border:1px solid var(--border);border-radius:5px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:border-color .2s,background .2s;}
 .burger:hover{border-color:var(--accent);background:var(--accent-dim);}
 .burger span{display:block;width:14px;height:1.5px;background:var(--text2);transition:all .25s;}
 .burger.active span:nth-child(1){transform:rotate(45deg) translate(4px,4px);}
 .burger.active span:nth-child(2){opacity:0;}
 .burger.active span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px);}
-.topbar-brand{
-  font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;
-  letter-spacing:.03em;color:var(--text);
-}
+.topbar-brand{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;letter-spacing:.03em;color:var(--text);}
 .topbar-brand span{color:var(--accent);}
 .topbar-right{display:flex;align-items:center;gap:8px;}
-.ctrl-btn{
-  height:34px;padding:0 12px;background:none;
-  border:1px solid var(--border);border-radius:5px;
-  font-size:.78rem;color:var(--text2);
-  transition:all .2s;display:flex;align-items:center;gap:6px;
-  font-family:'JetBrains Mono',monospace;letter-spacing:.04em;
-}
+.ctrl-btn{height:34px;padding:0 12px;background:none;border:1px solid var(--border);border-radius:5px;font-size:.78rem;color:var(--text2);transition:all .2s;display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;letter-spacing:.04em;}
 .ctrl-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
-.ctrl-btn.lang-active{border-color:var(--mauve);color:var(--mauve);}
 
-/* ─── OVERLAY & SIDEBAR ───────────────────────── */
+/* SIDEBAR */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:190;opacity:0;pointer-events:none;transition:opacity .3s;}
 .overlay.show{opacity:1;pointer-events:all;}
-.sidebar{
-  position:fixed;top:0;left:0;width:270px;height:100vh;z-index:200;
-  background:var(--bg2);border-right:1px solid var(--border);
-  display:flex;flex-direction:column;
-  transform:translateX(-270px);transition:transform .35s cubic-bezier(.4,0,.2,1);
-  overflow:hidden;
-}
+.sidebar{position:fixed;top:0;left:0;width:270px;height:100vh;z-index:200;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;transform:translateX(-270px);transition:transform .35s cubic-bezier(.4,0,.2,1);overflow:hidden;}
 .sidebar.open{transform:translateX(0);}
-.sidebar-head{
-  padding:18px 20px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;height:54px;
-}
+.sidebar-head{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;height:54px;}
 .sidebar-logo{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;color:var(--text);}
 .sidebar-close{width:28px;height:28px;background:none;border:none;color:var(--text3);font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:color .2s;}
 .sidebar-close:hover{color:var(--text);}
 .sidebar-nav{flex:1;padding:12px 0;overflow-y:auto;}
-.nav-group-label{
-  padding:14px 20px 5px;
-  font-family:'JetBrains Mono',monospace;font-size:.58rem;
-  letter-spacing:.18em;text-transform:uppercase;color:var(--text3);
-}
-.nav-link{
-  display:flex;align-items:center;gap:10px;
-  padding:9px 20px;border-left:2px solid transparent;
-  color:var(--text2);font-size:.88rem;transition:all .18s;
-}
+.nav-group-label{padding:14px 20px 5px;font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--text3);}
+.nav-link{display:flex;align-items:center;gap:10px;padding:9px 20px;border-left:2px solid transparent;color:var(--text2);font-size:.88rem;transition:all .18s;}
 .nav-link:hover,.nav-link.active{color:var(--text);background:var(--accent-dim);border-left-color:var(--accent);}
-.nav-link .nav-ic{
-  width:22px;height:22px;border:1px solid var(--border);border-radius:4px;
-  display:flex;align-items:center;justify-content:center;font-size:.75rem;
-  transition:border-color .18s;flex-shrink:0;
-}
+.nav-link .nav-ic{width:22px;height:22px;border:1px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.75rem;transition:border-color .18s;flex-shrink:0;}
 .nav-link:hover .nav-ic,.nav-link.active .nav-ic{border-color:var(--accent);}
 .nav-sub{padding:7px 20px 7px 52px;font-size:.8rem;color:var(--text3);transition:all .18s;border-left:2px solid transparent;}
 .nav-sub:hover,.nav-sub.active{color:var(--text2);background:var(--accent-dim);border-left-color:var(--border);}
 .sidebar-foot{padding:14px 20px;border-top:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:.64rem;color:var(--text3);}
 
-/* ─── MAIN ────────────────────────────────────── */
+/* MAIN */
 .main{margin-top:54px;padding:60px 32px 100px;max-width:980px;margin-left:auto;margin-right:auto;}
 section{display:none;}
 section.active{display:block;animation:fadeUp .36s ease both;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
-
-/* ─── SECTION HEADER ──────────────────────────── */
 .sec-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
 .sec-title{font-family:'Syne',sans-serif;font-size:2.1rem;font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.15;}
 .sec-sub{font-size:.92rem;color:var(--text2);max-width:520px;line-height:1.65;margin-bottom:40px;}
 
-/* ─── HERO ────────────────────────────────────── */
+/* HERO */
 .hero{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center;margin-bottom:64px;}
 .hero-tag{font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:18px;display:flex;align-items:center;gap:8px;}
 .hero-tag::before{content:'';display:inline-block;width:20px;height:1px;background:var(--accent);}
@@ -130,67 +81,54 @@ section.active{display:block;animation:fadeUp .36s ease both;}
 .hero-name em{font-style:normal;color:var(--accent);}
 .hero-role{font-size:1rem;color:var(--text2);line-height:1.6;margin-bottom:28px;max-width:480px;}
 .hero-badges{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:36px;}
-.badge{
-  padding:5px 13px;border:1px solid var(--border);border-radius:20px;
-  font-family:'JetBrains Mono',monospace;font-size:.66rem;
-  letter-spacing:.05em;color:var(--text3);transition:all .2s;
-}
+.badge{padding:5px 13px;border:1px solid var(--border);border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.05em;color:var(--text3);transition:all .2s;}
 .badge:hover{border-color:var(--accent);color:var(--accent);}
 .badge.mauve{border-color:var(--mauve-dim);color:var(--mauve);}
 .hero-btns{display:flex;gap:10px;flex-wrap:wrap;}
-.btn{
-  padding:10px 22px;border-radius:5px;font-size:.87rem;
-  font-weight:500;border:1px solid var(--border);
-  background:none;color:var(--text2);transition:all .2s;
-}
+.btn{padding:10px 22px;border-radius:5px;font-size:.87rem;font-weight:500;border:1px solid var(--border);background:none;color:var(--text2);transition:all .2s;}
 .btn:hover{border-color:var(--text2);color:var(--text);}
 .btn.primary{background:var(--accent);color:#0a0a0f;border-color:var(--accent);font-weight:600;}
 .btn.primary:hover{background:var(--accent2);border-color:var(--accent2);}
 .btn.mauve-btn{border-color:var(--mauve);color:var(--mauve);}
 .btn.mauve-btn:hover{background:var(--mauve-dim);}
 
-/* ─── LOGO 3D ─────────────────────────────────── */
-.logo-3d-wrap{width:200px;height:200px;position:relative;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
-.logo-3d{
-  width:180px;height:180px;
-  position:relative;
-  transform-style:preserve-3d;
-  animation:gear3d 12s linear infinite;
-}
-.logo-3d img{
-  width:100%;height:100%;
-  border-radius:50%;
-  filter:drop-shadow(0 0 18px rgba(245,197,24,.25));
-}
-.logo-glow{
-  position:absolute;inset:-20px;border-radius:50%;
-  background:radial-gradient(circle,rgba(245,197,24,.08) 0%,transparent 70%);
-  animation:glowPulse 3s ease-in-out infinite;
-}
-@keyframes gear3d{
-  0%{transform:perspective(600px) rotateY(0deg) rotateX(8deg);}
-  25%{transform:perspective(600px) rotateY(90deg) rotateX(4deg);}
-  50%{transform:perspective(600px) rotateY(180deg) rotateX(8deg);}
-  75%{transform:perspective(600px) rotateY(270deg) rotateX(12deg);}
-  100%{transform:perspective(600px) rotateY(360deg) rotateX(8deg);}
-}
-@keyframes glowPulse{0%,100%{opacity:.5;}50%{opacity:1;}}
+/* 3D LOGO */
+.logo-3d-wrap{width:210px;height:220px;position:relative;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;}
+.logo-glow{position:absolute;inset:-20px;border-radius:50%;background:radial-gradient(circle,rgba(245,197,24,.1) 0%,transparent 70%);animation:glowPulse 3s ease-in-out infinite;pointer-events:none;top:0;left:10px;right:10px;}
+@keyframes glowPulse{0%,100%{opacity:.4;}50%{opacity:1;}}
+#canvas3d{border-radius:50%;cursor:grab;display:block;filter:drop-shadow(0 0 20px rgba(245,197,24,.28));transition:filter .3s;}
+#canvas3d:active{cursor:grabbing;}
+#canvas3d:hover{filter:drop-shadow(0 0 30px rgba(245,197,24,.5));}
+#logo3d-loading{width:180px;height:180px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;}
+.logo-hint{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);white-space:nowrap;opacity:.5;text-align:center;}
 
-/* ─── INFO GRID ───────────────────────────────── */
+/* INFO GRID */
 .info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:40px;}
 .info-cell{background:var(--surface);padding:20px 22px;}
 .info-label{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-bottom:5px;}
 .info-value{font-size:.92rem;color:var(--text);font-weight:500;}
-.info-value a{transition:color .2s;}
 .info-value a:hover{color:var(--accent);}
 
-/* ─── BIO ─────────────────────────────────────── */
+/* BIO */
 .bio-block{padding:28px;background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:32px;position:relative;overflow:hidden;}
 .bio-block::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--mauve),transparent);}
 .bio-text{font-size:.93rem;color:var(--text2);line-height:1.8;}
 .bio-text strong{color:var(--text);font-weight:500;}
 
-/* ─── SKILLS ──────────────────────────────────── */
+/* MECH VIS */
+.mech-vis{width:100%;height:180px;position:relative;overflow:hidden;background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:32px;display:flex;align-items:center;justify-content:center;}
+.gear-anim{width:70px;height:70px;border:6px solid var(--accent);border-radius:50%;position:relative;flex-shrink:0;box-shadow:0 0 16px rgba(245,197,24,.15);}
+.gear-anim::before{content:'';position:absolute;inset:-12px;border:2px dashed rgba(245,197,24,.3);border-radius:50%;}
+.gear-anim::after{content:'';position:absolute;inset:10px;background:var(--accent-dim);border-radius:50%;border:1px solid var(--accent);}
+.gear-big{animation:spinGear 4s linear infinite;}
+.gear-med{width:50px;height:50px;border-width:4px;animation:spinGear 4s linear infinite reverse;margin:0 -4px;}
+.gear-small{width:35px;height:35px;border-width:3px;animation:spinGear 3s linear infinite;}
+.circuit-line{position:absolute;width:1px;background:linear-gradient(to bottom,transparent,var(--mauve),transparent);opacity:.4;animation:circuitFlow 2s ease-in-out infinite;}
+@keyframes spinGear{to{transform:rotate(360deg);}}
+@keyframes circuitFlow{0%,100%{opacity:.2;}50%{opacity:.6;}}
+.mech-label{position:absolute;bottom:12px;right:16px;font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);}
+
+/* SKILLS */
 .skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:40px;}
 .skills-col-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;color:var(--text);margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--border);}
 .skill-row{margin-bottom:18px;}
@@ -200,80 +138,46 @@ section.active{display:block;animation:fadeUp .36s ease both;}
 .skill-bar-bg{height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
 .skill-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1);}
 .skill-bar-fill.mauve{background:linear-gradient(90deg,var(--mauve),#6d4fc7);}
-.skill-bar-fill.loaded{/* width set by JS */}
 .skill-note{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text3);margin-top:4px;}
 
-/* ─── PROJECTS ────────────────────────────────── */
+/* PROJECTS */
 .filter-bar{display:flex;gap:6px;margin-bottom:28px;flex-wrap:wrap;}
-.filter-btn{
-  padding:5px 14px;border:1px solid var(--border);border-radius:20px;
-  font-family:'JetBrains Mono',monospace;font-size:.66rem;
-  letter-spacing:.05em;text-transform:uppercase;
-  color:var(--text3);background:none;transition:all .2s;
-}
+.filter-btn{padding:5px 14px;border:1px solid var(--border);border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.05em;text-transform:uppercase;color:var(--text3);background:none;transition:all .2s;}
 .filter-btn:hover,.filter-btn.active{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
 .proj-grid{display:flex;flex-direction:column;gap:1px;background:var(--border);}
-.proj-card{
-  background:var(--surface);padding:24px 28px;
-  display:grid;grid-template-columns:1fr auto;gap:16px;
-  align-items:start;transition:background .18s;
-  border:none;text-align:left;width:100%;
-  font-family:inherit;color:inherit;
-}
+.proj-card{background:var(--surface);padding:24px 28px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;transition:background .18s;border:none;text-align:left;width:100%;font-family:inherit;color:inherit;}
 .proj-card:hover{background:var(--surface2);}
 .proj-card-top{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
-.proj-cat{
-  font-family:'JetBrains Mono',monospace;font-size:.6rem;
-  letter-spacing:.12em;text-transform:uppercase;
-  padding:2px 8px;border-radius:3px;
-}
+.proj-cat{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;padding:2px 8px;border-radius:3px;}
 .cat-mec{background:rgba(245,197,24,.1);color:var(--accent);}
 .cat-elec{background:rgba(157,127,227,.1);color:var(--mauve);}
 .cat-rob{background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.2);color:var(--accent);}
-.cat-auto{background:rgba(157,127,227,.07);border:1px solid rgba(157,127,227,.2);color:var(--mauve);}
 .proj-title{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin-bottom:6px;}
 .proj-desc{font-size:.86rem;color:var(--text2);line-height:1.6;margin-bottom:12px;max-width:540px;}
 .proj-chips{display:flex;gap:6px;flex-wrap:wrap;}
-.chip{
-  padding:2px 8px;border:1px solid var(--border);border-radius:3px;
-  font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text3);
-}
+.chip{padding:2px 8px;border:1px solid var(--border);border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text3);}
 .proj-meta{display:flex;gap:18px;margin-top:12px;flex-wrap:wrap;}
 .proj-meta-item{font-family:'JetBrains Mono',monospace;font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);}
 .proj-meta-item strong{color:var(--text2);}
 .proj-arrow{font-size:1rem;color:var(--text3);transition:transform .2s,color .2s;margin-top:4px;}
 .proj-card:hover .proj-arrow{transform:translateX(5px);color:var(--accent);}
 
-/* ─── AWARDS ──────────────────────────────────── */
+/* AWARDS */
 .awards-list{display:flex;flex-direction:column;gap:12px;margin-bottom:40px;}
-.award-item{
-  display:flex;align-items:flex-start;gap:16px;
-  padding:16px 20px;background:var(--card);border:1px solid var(--border);
-  border-radius:6px;transition:border-color .2s;
-}
+.award-item{display:flex;align-items:flex-start;gap:16px;padding:16px 20px;background:var(--card);border:1px solid var(--border);border-radius:6px;transition:border-color .2s;}
 .award-item:hover{border-color:var(--accent);}
-.award-rank{
-  min-width:44px;height:44px;border-radius:6px;
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;flex-shrink:0;
-}
+.award-rank{min-width:44px;height:44px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;flex-shrink:0;}
 .rank-gold{background:rgba(245,197,24,.15);color:var(--accent);}
 .rank-silver{background:rgba(200,200,220,.1);color:#c8c8dc;}
 .rank-bronze{background:rgba(180,120,80,.1);color:#b47850;}
-.award-info{}
 .award-title{font-size:.9rem;font-weight:500;color:var(--text);margin-bottom:3px;}
 .award-detail{font-size:.8rem;color:var(--text2);}
 
-/* ─── TIMELINE ────────────────────────────────── */
+/* TIMELINE */
 .timeline{position:relative;padding-left:28px;}
 .timeline::before{content:'';position:absolute;left:7px;top:6px;bottom:0;width:1px;background:var(--border);}
 .tl-item{position:relative;margin-bottom:32px;}
-.tl-dot{
-  position:absolute;left:-28px;top:4px;
-  width:14px;height:14px;border-radius:50%;
-  border:2px solid var(--border);background:var(--bg);
-  transition:border-color .2s;
-}
+.tl-dot{position:absolute;left:-28px;top:4px;width:14px;height:14px;border-radius:50%;border:2px solid var(--border);background:var(--bg);transition:border-color .2s;}
 .tl-item:hover .tl-dot{border-color:var(--accent);background:var(--accent);}
 .tl-dot.accent{border-color:var(--accent);background:var(--accent);}
 .tl-dot.mauve{border-color:var(--mauve);background:var(--mauve);}
@@ -282,57 +186,15 @@ section.active{display:block;animation:fadeUp .36s ease both;}
 .tl-org{font-size:.8rem;color:var(--accent);font-family:'JetBrains Mono',monospace;margin-bottom:6px;}
 .tl-desc{font-size:.85rem;color:var(--text2);line-height:1.65;}
 
-/* ─── MECH ANIMATION ──────────────────────────── */
-.mech-vis{
-  width:100%;height:180px;position:relative;overflow:hidden;
-  background:var(--card);border:1px solid var(--border);border-radius:8px;
-  margin-bottom:32px;display:flex;align-items:center;justify-content:center;
-  gap:0;
-}
-.gear-anim{
-  width:70px;height:70px;
-  border:6px solid var(--accent);border-radius:50%;
-  position:relative;flex-shrink:0;
-  box-shadow:0 0 16px rgba(245,197,24,.15);
-}
-.gear-anim::before{
-  content:'';position:absolute;inset:-12px;
-  border:2px dashed rgba(245,197,24,.3);
-  border-radius:50%;
-}
-.gear-anim::after{
-  content:'';position:absolute;inset:10px;
-  background:var(--accent-dim);border-radius:50%;
-  border:1px solid var(--accent);
-}
-.gear-big{animation:spinGear 4s linear infinite;}
-.gear-med{width:50px;height:50px;border-width:4px;animation:spinGear 4s linear infinite reverse;margin:0 -4px;}
-.gear-small{width:35px;height:35px;border-width:3px;animation:spinGear 3s linear infinite;}
-.circuit-line{
-  position:absolute;width:1px;background:linear-gradient(to bottom,transparent,var(--mauve),transparent);
-  opacity:.4;animation:circuitFlow 2s ease-in-out infinite;
-}
-@keyframes spinGear{to{transform:rotate(360deg);}}
-@keyframes circuitFlow{0%,100%{opacity:.2;}50%{opacity:.6;}}
-.mech-label{
-  position:absolute;bottom:12px;right:16px;
-  font-family:'JetBrains Mono',monospace;font-size:.6rem;
-  letter-spacing:.12em;text-transform:uppercase;color:var(--text3);
-}
-
-/* ─── CONTACT ─────────────────────────────────── */
+/* CONTACT */
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;background:var(--border);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:32px;}
 .contact-cell{background:var(--surface);padding:22px 24px;border:none;}
 .contact-label{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
 .contact-value{font-size:.9rem;color:var(--text);}
 .contact-value a:hover{color:var(--accent);}
-.contact-note{
-  padding:22px 24px;background:var(--card);border:1px solid var(--border);
-  border-radius:8px;border-left:3px solid var(--accent);
-  font-size:.87rem;color:var(--text2);line-height:1.75;
-}
+.contact-note{padding:22px 24px;background:var(--card);border:1px solid var(--border);border-radius:8px;border-left:3px solid var(--accent);font-size:.87rem;color:var(--text2);line-height:1.75;}
 
-/* ─── MODAL ───────────────────────────────────── */
+/* MODAL */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:400;display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px);}
 .modal-bg.open{display:flex;}
 .modal{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:28px;width:90%;max-width:400px;animation:fadeUp .25s ease;}
@@ -345,7 +207,7 @@ section.active{display:block;animation:fadeUp .36s ease both;}
 .modal-prev{width:100%;border-radius:4px;margin-top:10px;max-height:150px;object-fit:cover;display:none;}
 .modal-acts{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;}
 
-/* ─── GALLERY ─────────────────────────────────── */
+/* GALLERY */
 .gal-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
 .gal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:40px;}
 .gal-cell{aspect-ratio:4/3;border:1px solid var(--border);border-radius:5px;overflow:hidden;background:var(--surface2);position:relative;cursor:pointer;transition:border-color .2s;}
@@ -358,7 +220,6 @@ section.active{display:block;animation:fadeUp .36s ease both;}
 .gal-add{border:1px dashed var(--border);border-radius:5px;display:flex;align-items:center;justify-content:center;aspect-ratio:4/3;cursor:pointer;color:var(--text3);font-size:1.5rem;transition:all .2s;}
 .gal-add:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
 
-/* ─── RESPONSIVE ──────────────────────────────── */
 @media(max-width:750px){
   .hero{grid-template-columns:1fr;}.logo-3d-wrap{display:none;}
   .skills-grid{grid-template-columns:1fr;}
@@ -372,14 +233,13 @@ section.active{display:block;animation:fadeUp .36s ease both;}
 
 <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
-<!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-head">
     <div class="sidebar-logo">M. Farah</div>
     <button class="sidebar-close" onclick="closeSidebar()">&#x2715;</button>
   </div>
   <nav class="sidebar-nav">
-    <div class="nav-group-label" data-fr="Navigation" data-en="Navigation">Navigation</div>
+    <div class="nav-group-label">Navigation</div>
     <div class="nav-link active" id="nl-home" onclick="goTo('home')">
       <span class="nav-ic">&#9651;</span>
       <span data-fr="À propos" data-en="About">À propos</span>
@@ -404,31 +264,28 @@ section.active{display:block;animation:fadeUp .36s ease both;}
       <span data-fr="Contact" data-en="Contact">Contact</span>
     </div>
   </nav>
-  <div class="sidebar-foot">AI Assisted &#x2022; ENSAM Meknès &#x2022; 2025</div>
+  <div class="sidebar-foot">ENSAM Meknès &#x2022; 2025</div>
 </aside>
 
-<!-- TOPBAR -->
 <header class="topbar">
   <div class="topbar-left">
     <button class="burger" id="burger" onclick="toggleSidebar()"><span></span><span></span><span></span></button>
     <div class="topbar-brand">Moncif <span>Farah</span></div>
   </div>
   <div class="topbar-right">
-    <button class="ctrl-btn" id="langBtn" onclick="toggleLang()">
+    <button class="ctrl-btn" onclick="toggleLang()">
       <span id="langInd">FR</span> &#x21C4; <span id="langTarget">EN</span>
     </button>
-    <button class="ctrl-btn" id="themeBtn" onclick="toggleTheme()">
+    <button class="ctrl-btn" onclick="toggleTheme()">
       <span id="themeIco">&#9790;</span>
     </button>
   </div>
 </header>
 
-<main class="main" id="main">
+<main class="main">
 
-<!-- ═══ PAGE: HOME ═══════════════════════════════════════ -->
+<!-- HOME -->
 <section class="active" id="pg-home">
-
-  <!-- Mech animation banner -->
   <div class="mech-vis">
     <div class="gear-anim gear-big"></div>
     <div class="gear-anim gear-med"></div>
@@ -462,11 +319,13 @@ section.active{display:block;animation:fadeUp .36s ease both;}
         <button class="btn mauve-btn" onclick="goTo('contact')" data-fr="Me contacter" data-en="Contact me">Me contacter</button>
       </div>
     </div>
+
+    <!-- 3D LOGO -->
     <div class="logo-3d-wrap">
       <div class="logo-glow"></div>
-      <div class="logo-3d">
-<div id="Untitled1.glb"></div>
-      </div>
+      <div id="logo3d-loading">Chargement...</div>
+      <canvas id="canvas3d" width="180" height="180" style="display:none;"></canvas>
+      <div class="logo-hint" data-fr="Glisser pour tourner" data-en="Drag to rotate">Glisser pour tourner</div>
     </div>
   </div>
 
@@ -488,7 +347,7 @@ section.active{display:block;animation:fadeUp .36s ease both;}
       <div class="info-value" data-fr="Électromécanique & Digitalisation" data-en="Electromechanics & Digitalization">Électromécanique & Digitalisation</div>
     </div>
     <div class="info-cell">
-      <div class="info-label" data-fr="Club" data-en="Club">Club</div>
+      <div class="info-label">Club</div>
       <div class="info-value">Club Robotique ENSAM</div>
     </div>
     <div class="info-cell">
@@ -504,402 +363,183 @@ section.active{display:block;animation:fadeUp .36s ease both;}
   </div>
 </section>
 
-<!-- ═══ PAGE: SKILLS ══════════════════════════════════════ -->
+<!-- SKILLS -->
 <section id="pg-skills">
   <div class="sec-eyebrow" data-fr="Expertise technique" data-en="Technical expertise">Expertise technique</div>
   <h2 class="sec-title" data-fr="Compétences" data-en="Skills">Compétences</h2>
   <p class="sec-sub" data-fr="Évaluation honnête basée sur l'expérience réelle en projet. Le hardware est ma force principale." data-en="Honest assessment based on real project experience. Hardware is my main strength.">Évaluation honnête basée sur l'expérience réelle en projet. Le hardware est ma force principale.</p>
-
   <div class="skills-grid">
     <div>
       <div class="skills-col-title" data-fr="Mécanique & Conception" data-en="Mechanics & Design">Mécanique & Conception</div>
-      <div class="skill-row">
-        <div class="skill-head"><span class="skill-name" data-fr="Conception CATIA V5" data-en="CATIA V5 Design">Conception CATIA V5</span><span class="skill-pct">95%</span></div>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" data-w="95"></div></div>
-        <div class="skill-note" data-fr="Pièces, assemblages, mise en plan" data-en="Parts, assemblies, drawings">Pièces, assemblages, mise en plan</div>
-      </div>
-      <div class="skill-row">
-        <div class="skill-head"><span class="skill-name" data-fr="Impression 3D & Prototypage" data-en="3D Printing & Prototyping">Impression 3D & Prototypage</span><span class="skill-pct">90%</span></div>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" data-w="90"></div></div>
-        <div class="skill-note" data-fr="FDM, PLA, PETG, TPU" data-en="FDM, PLA, PETG, TPU">FDM, PLA, PETG, TPU</div>
-      </div>
-      <div class="skill-row">
-        <div class="skill-head"><span class="skill-name" data-fr="Assemblage & Montage mécanique" data-en="Mechanical Assembly">Assemblage & Montage mécanique</span><span class="skill-pct">92%</span></div>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" data-w="92"></div></div>
-      </div>
-      <div class="skill-row">
-        <div class="skill-head"><span class="skill-name" data-fr="Dessin technique" data-en="Technical Drawing">Dessin technique</span><span class="skill-pct">87%</span></div>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" data-w="87"></div></div>
-      </div>
+      <div class="skill-row"><div class="skill-head"><span class="skill-name" data-fr="Conception CATIA V5" data-en="CATIA V5 Design">Conception CATIA V5</span><span class="skill-pct">95%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-w="95"></div></div><div class="skill-note">Pièces, assemblages, mise en plan</div></div>
+      <div class="skill-row"><div class="skill-head"><span class="skill-name" data-fr="Impression 3D & Prototypage" data-en="3D Printing & Prototyping">Impression 3D & Prototypage</span><span class="skill-pct">90%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-w="90"></div></div><div class="skill-note">FDM, PLA, PETG, TPU</div></div>
+      <div class="skill-row"><div class="skill-head"><span class="skill-name" data-fr="Assemblage & Montage mécanique" data-en="Mechanical Assembly">Assemblage & Montage mécanique</span><span class="skill-pct">92%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-w="92"></div></div></div>
+      <div class="skill-row"><div class="skill-head"><span class="skill-name" data-fr="Dessin technique" data-en="Technical Drawing">Dessin technique</span><span class="skill-pct">87%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-w="87"></div></div></div>
       <div class="skills-col-title" style="margin-top:28px;" data-fr="Systèmes de Commande" data-en="Control Systems">Systèmes de Commande</div>
-      <div class="skill-row">
-        <div class="skill-head"><span class="skill-name" data-fr="Systèmes de commande" data-en="Control systems">Systèmes de commande</span><span class="skill-pct">87%</span></div>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" data-w="87"></div></div>
-      </div>
-      <div class="skill-row">
-        <div class="skill-head"><span class="skill-name" data-fr="Automatisation industrielle" data-en="Industrial automation">Automatisation industrielle</span><span class="skill-pct">80%</span></div>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" data-w="80"></div></div>
-      </div>
-      <div class="skill-row">
-        <div class="skill-head"><span class="skill-name" data-fr="Robotique mobile" data-en="Mobile robotics">Robotique mobile</span><span class="skill-pct">85%</span></div>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" data-w="85"></div></div>
-        <div class="skill-note" data-fr="Suiveur de ligne, évitement, locomotion" data-en="Line follower, avoidance, locomotion">Suiveur de ligne, évitement, locomotion</div>
-      </div>
+      <div class="skill-row"><div class="skill-head"><span class="skill-name" data-fr="Systèmes de commande" data-en="Control systems">Systèmes de commande</span><span class="skill-pct">87%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-w="87"></div></div></div>
+      <div class="skill-row"><div class="skill-head"><span class="skill-name" data-fr="Automatisation industrielle" data-en="Industrial automation">Automatisation industrielle</span><span class="skill-pct">80%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-w="80"></div></div></div>
+      <div class="skill-row"><div class="skill-head"><span class="skill-name" data-fr="Robotique mobile" data-en="Mobile robotics">Robotique mobile</span><span class="skill-pct">85%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-w="85"></div></div><div class="skill-note">Suiveur de ligne, évitement, locomotion</div></div>
     </div>
     <div>
       <div class="skills-col-title" data-fr="Électronique & Hardware" data-en="Electronics & Hardware">Électronique & Hardware</div>
-      <div class="skill-row">
-        <div class="skill-head"><span class="skill-name" data-fr="Schéma électrique & Montage" data-en="Electrical schematics & Wiring">Schéma électrique & Montage</span><span class="skill-pct">94%</span></div>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" data-w="94"></div></div>
-        <div class="skill-note" data-fr="Composants, câblage, tests" data-en="Components, wiring, testing">Composants, câblage, tests</div>
-      </div>
-      <div class="skill-row">
-        <div class="skill-head"><span class="skill-name" data-fr="Arduino / ESP32 — Embarqué" data-en="Arduino / ESP32 — Embedded">Arduino / ESP32 — Embarqué</span><span class="skill-pct">90%</span></div>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" data-w="90"></div></div>
-      </div>
-      <div class="skill-row">
-        <div class="skill-head"><span class="skill-name" data-fr="Servomoteurs & Actionneurs" data-en="Servos & Actuators">Servomoteurs & Actionneurs</span><span class="skill-pct">88%</span></div>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" data-w="88"></div></div>
-        <div class="skill-note" data-fr="PWM, I2C, drivers, alimentation" data-en="PWM, I2C, drivers, power supply">PWM, I2C, drivers, alimentation</div>
-      </div>
-      <div class="skill-row">
-        <div class="skill-head"><span class="skill-name" data-fr="Capteurs & Traitement signal" data-en="Sensors & Signal processing">Capteurs & Traitement signal</span><span class="skill-pct">82%</span></div>
-        <div class="skill-bar-bg"><div class="skill-bar-fill" data-w="82"></div></div>
-      </div>
-      <div class="skills-col-title" style="margin-top:28px;" data-fr="Programmation" data-en="Programming">Programmation</div>
-      <div class="skill-row">
-        <div class="skill-head"><span class="skill-name">C++ (Arduino)</span><span class="skill-pct">84%</span></div>
-        <div class="skill-bar-bg"><div class="skill-bar-fill mauve" data-w="84"></div></div>
-        <div class="skill-note" data-fr="Firmware, contrôle servos, protocoles" data-en="Firmware, servo control, protocols">Firmware, contrôle servos, protocoles</div>
-      </div>
-      <div class="skill-row">
-        <div class="skill-head"><span class="skill-name">Python</span><span class="skill-pct">72%</span></div>
-        <div class="skill-bar-bg"><div class="skill-bar-fill mauve" data-w="72"></div></div>
-      </div>
-      <div class="skill-row">
-        <div class="skill-head"><span class="skill-name" data-fr="Contrôle WiFi / Bluetooth" data-en="WiFi / Bluetooth Control">Contrôle WiFi / Bluetooth</span><span class="skill-pct">80%</span></div>
-        <div class="skill-bar-bg"><div class="skill-bar-fill mauve" data-w="80"></div></div>
-      </div>
+      <div class="skill-row"><div class="skill-head"><span class="skill-name" data-fr="Schéma électrique & Montage" data-en="Electrical schematics & Wiring">Schéma électrique & Montage</span><span class="skill-pct">94%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-w="94"></div></div><div class="skill-note">Composants, câblage, tests</div></div>
+      <div class="skill-row"><div class="skill-head"><span class="skill-name">Arduino / ESP32 — Embarqué</span><span class="skill-pct">90%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-w="90"></div></div></div>
+      <div class="skill-row"><div class="skill-head"><span class="skill-name">Servomoteurs & Actionneurs</span><span class="skill-pct">88%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-w="88"></div></div><div class="skill-note">PWM, I2C, drivers, alimentation</div></div>
+      <div class="skill-row"><div class="skill-head"><span class="skill-name">Capteurs & Traitement signal</span><span class="skill-pct">82%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-w="82"></div></div></div>
+      <div class="skills-col-title" style="margin-top:28px;">Programmation</div>
+      <div class="skill-row"><div class="skill-head"><span class="skill-name">C++ (Arduino)</span><span class="skill-pct">84%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill mauve" data-w="84"></div></div><div class="skill-note">Firmware, contrôle servos, protocoles</div></div>
+      <div class="skill-row"><div class="skill-head"><span class="skill-name">Python</span><span class="skill-pct">72%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill mauve" data-w="72"></div></div></div>
+      <div class="skill-row"><div class="skill-head"><span class="skill-name">Contrôle WiFi / Bluetooth</span><span class="skill-pct">80%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill mauve" data-w="80"></div></div></div>
     </div>
   </div>
-  <p style="font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text3);" data-fr="Niveaux auto-évalués sur la base de projets réels." data-en="Self-assessed levels based on real projects.">Niveaux auto-évalués sur la base de projets réels.</p>
+  <p style="font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text3);">Niveaux auto-évalués sur la base de projets réels.</p>
 </section>
 
-<!-- ═══ PAGE: PROJECTS ════════════════════════════════════ -->
+<!-- PROJECTS -->
 <section id="pg-projects">
   <div class="sec-eyebrow" data-fr="Réalisations" data-en="Realizations">Réalisations</div>
   <h2 class="sec-title" data-fr="Projets" data-en="Projects">Projets</h2>
-  <p class="sec-sub" data-fr="Systèmes conçus et réalisés — de la mécanique au firmware. Cliquez sur un projet pour voir les détails." data-en="Systems designed and built — from mechanics to firmware. Click a project to see details.">Systèmes conçus et réalisés — de la mécanique au firmware. Cliquez sur un projet pour voir les détails.</p>
-
+  <p class="sec-sub" data-fr="Systèmes conçus et réalisés — de la mécanique au firmware." data-en="Systems designed and built — from mechanics to firmware.">Systèmes conçus et réalisés — de la mécanique au firmware.</p>
   <div class="filter-bar">
-    <button class="filter-btn active" onclick="filterProj('all')" data-fr="Tous" data-en="All">Tous</button>
-    <button class="filter-btn" onclick="filterProj('mec')" data-fr="Mécanique" data-en="Mechanics">Mécanique</button>
-    <button class="filter-btn" onclick="filterProj('elec')" data-fr="Électronique" data-en="Electronics">Électronique</button>
-    <button class="filter-btn" onclick="filterProj('rob')" data-fr="Robotique" data-en="Robotics">Robotique</button>
+    <button class="filter-btn active" onclick="filterProj('all',event)">Tous</button>
+    <button class="filter-btn" onclick="filterProj('mec',event)">Mécanique</button>
+    <button class="filter-btn" onclick="filterProj('elec',event)">Électronique</button>
+    <button class="filter-btn" onclick="filterProj('rob',event)">Robotique</button>
   </div>
-
   <div class="proj-grid" id="projGrid">
     <button class="proj-card" data-cat="rob mec elec" onclick="goTo('spider')">
-      <div>
-        <div class="proj-card-top">
-          <span class="proj-cat cat-rob" data-fr="Robotique" data-en="Robotics">Robotique</span>
-          <span class="proj-cat cat-mec" data-fr="Mécanique" data-en="Mechanics">Mécanique</span>
-        </div>
-        <div class="proj-title">Mini Spider Robot</div>
-        <div class="proj-desc" data-fr="Robot araignée quadrupède miniature. Conception mécanique complète (châssis imprimé 3D, 4 pattes articulées), 8 servomoteurs via PCA9685, ESP32 avec contrôle WiFi." data-en="Miniature quadruped spider robot. Complete mechanical design (3D printed chassis, 4 articulated legs), 8 servos via PCA9685, ESP32 with WiFi control.">Robot araignée quadrupède miniature. Conception mécanique complète (châssis imprimé 3D, 4 pattes articulées), 8 servomoteurs via PCA9685, ESP32 avec contrôle WiFi.</div>
-        <div class="proj-chips">
-          <span class="chip">ESP32</span><span class="chip">PCA9685</span><span class="chip">CATIA V5</span><span class="chip">Impression 3D</span><span class="chip">C++</span>
-        </div>
-        <div class="proj-meta">
-          <span class="proj-meta-item" data-fr="Statut <strong>En cours</strong>" data-en="Status <strong>In progress</strong>">Statut <strong>En cours</strong></span>
-          <span class="proj-meta-item">2025</span>
-        </div>
-      </div>
+      <div><div class="proj-card-top"><span class="proj-cat cat-rob">Robotique</span><span class="proj-cat cat-mec">Mécanique</span></div><div class="proj-title">Mini Spider Robot</div><div class="proj-desc">Robot araignée quadrupède miniature. Conception mécanique complète (châssis imprimé 3D, 4 pattes articulées), 8 servomoteurs via PCA9685, ESP32 avec contrôle WiFi.</div><div class="proj-chips"><span class="chip">ESP32</span><span class="chip">PCA9685</span><span class="chip">CATIA V5</span><span class="chip">Impression 3D</span><span class="chip">C++</span></div><div class="proj-meta"><span class="proj-meta-item">Statut <strong>En cours</strong></span><span class="proj-meta-item">2025</span></div></div>
       <div class="proj-arrow">&#8594;</div>
     </button>
-
     <button class="proj-card" data-cat="mec elec rob" onclick="goTo('penplotter')">
-      <div>
-        <div class="proj-card-top">
-          <span class="proj-cat cat-mec" data-fr="Mécanique" data-en="Mechanics">Mécanique</span>
-          <span class="proj-cat cat-elec" data-fr="Embarqué" data-en="Embedded">Embarqué</span>
-        </div>
-        <div class="proj-title">Pen Plotter</div>
-        <div class="proj-desc" data-fr="Traceur 2 axes conçu de zéro. Guidage linéaire, moteurs pas à pas, planification de trajectoire et génération de G-code. Conception mécanique et électronique intégrées." data-en="2-axis plotter designed from scratch. Linear guides, stepper motors, trajectory planning and G-code generation. Integrated mechanical and electronic design.">Traceur 2 axes conçu de zéro. Guidage linéaire, moteurs pas à pas, planification de trajectoire et génération de G-code. Conception mécanique et électronique intégrées.</div>
-        <div class="proj-chips">
-          <span class="chip">Steppers</span><span class="chip">Arduino</span><span class="chip">G-Code</span><span class="chip">Guidage linéaire</span>
-        </div>
-        <div class="proj-meta">
-          <span class="proj-meta-item" data-fr="Statut <strong>Terminé</strong>" data-en="Status <strong>Completed</strong>">Statut <strong>Terminé</strong></span>
-          <span class="proj-meta-item">2024</span>
-        </div>
-      </div>
+      <div><div class="proj-card-top"><span class="proj-cat cat-mec">Mécanique</span><span class="proj-cat cat-elec">Embarqué</span></div><div class="proj-title">Pen Plotter</div><div class="proj-desc">Traceur 2 axes conçu de zéro. Guidage linéaire, moteurs pas à pas, planification de trajectoire et génération de G-code.</div><div class="proj-chips"><span class="chip">Steppers</span><span class="chip">Arduino</span><span class="chip">G-Code</span><span class="chip">Guidage linéaire</span></div><div class="proj-meta"><span class="proj-meta-item">Statut <strong>Terminé</strong></span><span class="proj-meta-item">2024</span></div></div>
       <div class="proj-arrow">&#8594;</div>
     </button>
-
     <button class="proj-card" data-cat="rob elec" onclick="goTo('cleanbot')">
-      <div>
-        <div class="proj-card-top">
-          <span class="proj-cat cat-rob" data-fr="Robotique" data-en="Robotics">Robotique</span>
-        </div>
-        <div class="proj-title">CleanBot</div>
-        <div class="proj-desc" data-fr="Robot de nettoyage autonome. Navigation par capteurs ultrasoniques, motorisation DC différentielle, détection et évitement d'obstacles en temps réel." data-en="Autonomous cleaning robot. Ultrasonic sensor navigation, differential DC motorization, real-time obstacle detection and avoidance.">Robot de nettoyage autonome. Navigation par capteurs ultrasoniques, motorisation DC différentielle, détection et évitement d'obstacles en temps réel.</div>
-        <div class="proj-chips">
-          <span class="chip">HC-SR04</span><span class="chip">L298N</span><span class="chip">Arduino</span><span class="chip">DC Motors</span>
-        </div>
-        <div class="proj-meta">
-          <span class="proj-meta-item" data-fr="Statut <strong>Terminé</strong>" data-en="Status <strong>Completed</strong>">Statut <strong>Terminé</strong></span>
-          <span class="proj-meta-item">2024</span>
-        </div>
-      </div>
+      <div><div class="proj-card-top"><span class="proj-cat cat-rob">Robotique</span></div><div class="proj-title">CleanBot</div><div class="proj-desc">Robot de nettoyage autonome. Navigation par capteurs ultrasoniques, motorisation DC différentielle, détection et évitement d'obstacles en temps réel.</div><div class="proj-chips"><span class="chip">HC-SR04</span><span class="chip">L298N</span><span class="chip">Arduino</span><span class="chip">DC Motors</span></div><div class="proj-meta"><span class="proj-meta-item">Statut <strong>Terminé</strong></span><span class="proj-meta-item">2024</span></div></div>
       <div class="proj-arrow">&#8594;</div>
     </button>
-
     <button class="proj-card" data-cat="rob elec" onclick="">
-      <div>
-        <div class="proj-card-top">
-          <span class="proj-cat cat-rob" data-fr="Robotique" data-en="Robotics">Robotique</span>
-        </div>
-        <div class="proj-title" data-fr="Robot Suiveur de Ligne" data-en="Line Follower Robot">Robot Suiveur de Ligne</div>
-        <div class="proj-desc" data-fr="Capteurs IR réfléchissants, algorithme PID pour le suivi de trajectoire, motorisation différentielle. 2ème place compétition interne — 3ème place université privée de Fès." data-en="Reflective IR sensors, PID algorithm for trajectory tracking, differential motorization. 2nd place internal competition — 3rd place private university of Fès.">Capteurs IR réfléchissants, algorithme PID pour le suivi de trajectoire, motorisation différentielle. 2ème place compétition interne — 3ème place université privée de Fès.</div>
-        <div class="proj-chips">
-          <span class="chip">IR Sensors</span><span class="chip">PID Control</span><span class="chip">Arduino</span>
-        </div>
-        <div class="proj-meta">
-          <span class="proj-meta-item">&#129351; ARB Africa — 1ère place</span>
-          <span class="proj-meta-item">2024</span>
-        </div>
-      </div>
+      <div><div class="proj-card-top"><span class="proj-cat cat-rob">Robotique</span></div><div class="proj-title">Robot Suiveur de Ligne</div><div class="proj-desc">Capteurs IR réfléchissants, algorithme PID pour le suivi de trajectoire, motorisation différentielle. 2ème place interne — 3ème place université privée de Fès.</div><div class="proj-chips"><span class="chip">IR Sensors</span><span class="chip">PID Control</span><span class="chip">Arduino</span></div><div class="proj-meta"><span class="proj-meta-item">&#129351; ARB Africa — 1ère place</span><span class="proj-meta-item">2024</span></div></div>
       <div class="proj-arrow">&#8594;</div>
     </button>
-
     <button class="proj-card" data-cat="mec elec" onclick="">
-      <div>
-        <div class="proj-card-top">
-          <span class="proj-cat cat-mec" data-fr="Mécanique" data-en="Mechanics">Mécanique</span>
-        </div>
-        <div class="proj-title" data-fr="Balançoire 2 roues (Self-balancing)" data-en="2-Wheel Self-Balancing">Balançoire 2 roues (Self-balancing)</div>
-        <div class="proj-desc" data-fr="Robot à équilibre dynamique sur 2 roues. Utilise un IMU MPU-6050 pour la mesure d'angle et un contrôleur PID pour maintenir l'équilibre. Défi de commande en temps réel." data-en="Dynamic balance robot on 2 wheels. Uses MPU-6050 IMU for angle measurement and PID controller to maintain balance. Real-time control challenge.">Robot à équilibre dynamique sur 2 roues. Utilise un IMU MPU-6050 pour la mesure d'angle et un contrôleur PID pour maintenir l'équilibre.</div>
-        <div class="proj-chips">
-          <span class="chip">MPU-6050</span><span class="chip">PID</span><span class="chip">Stepper / DC</span>
-        </div>
-        <div class="proj-meta">
-          <span class="proj-meta-item" data-fr="Statut <strong>En cours</strong>" data-en="Status <strong>In progress</strong>">Statut <strong>En cours</strong></span>
-          <span class="proj-meta-item">2025</span>
-        </div>
-      </div>
+      <div><div class="proj-card-top"><span class="proj-cat cat-mec">Mécanique</span></div><div class="proj-title">Balançoire 2 roues (Self-balancing)</div><div class="proj-desc">Robot à équilibre dynamique sur 2 roues. Utilise un IMU MPU-6050 et un contrôleur PID pour maintenir l'équilibre.</div><div class="proj-chips"><span class="chip">MPU-6050</span><span class="chip">PID</span><span class="chip">Stepper / DC</span></div><div class="proj-meta"><span class="proj-meta-item">Statut <strong>En cours</strong></span><span class="proj-meta-item">2025</span></div></div>
       <div class="proj-arrow">&#8594;</div>
     </button>
-
     <button class="proj-card" data-cat="elec rob" onclick="">
-      <div>
-        <div class="proj-card-top">
-          <span class="proj-cat cat-elec" data-fr="Embarqué" data-en="Embedded">Embarqué</span>
-        </div>
-        <div class="proj-title" data-fr="Voiture Bluetooth / Éviteur d'obstacles" data-en="Bluetooth Car / Obstacle Avoider">Voiture Bluetooth / Éviteur d'obstacles</div>
-        <div class="proj-desc" data-fr="Voiture RC contrôlée via Bluetooth (HC-05) avec mode automatique d'évitement d'obstacles par capteurs ultrasoniques. Double mode : télécommandé et autonome." data-en="RC car controlled via Bluetooth (HC-05) with automatic obstacle avoidance mode using ultrasonic sensors. Dual mode: remote-controlled and autonomous.">Voiture RC contrôlée via Bluetooth (HC-05) avec mode automatique d'évitement d'obstacles. Double mode : télécommandé et autonome.</div>
-        <div class="proj-chips">
-          <span class="chip">HC-05 BT</span><span class="chip">HC-SR04</span><span class="chip">L298N</span><span class="chip">Arduino</span>
-        </div>
-        <div class="proj-meta">
-          <span class="proj-meta-item" data-fr="Statut <strong>Terminé</strong>" data-en="Status <strong>Completed</strong>">Statut <strong>Terminé</strong></span>
-          <span class="proj-meta-item">2024</span>
-        </div>
-      </div>
+      <div><div class="proj-card-top"><span class="proj-cat cat-elec">Embarqué</span></div><div class="proj-title">Voiture Bluetooth / Éviteur d'obstacles</div><div class="proj-desc">Voiture RC contrôlée via Bluetooth (HC-05) avec mode automatique d'évitement d'obstacles. Double mode : télécommandé et autonome.</div><div class="proj-chips"><span class="chip">HC-05 BT</span><span class="chip">HC-SR04</span><span class="chip">L298N</span><span class="chip">Arduino</span></div><div class="proj-meta"><span class="proj-meta-item">Statut <strong>Terminé</strong></span><span class="proj-meta-item">2024</span></div></div>
       <div class="proj-arrow">&#8594;</div>
     </button>
   </div>
 </section>
 
-<!-- ═══ PAGE: SPIDER DETAIL ═══════════════════════════════ -->
+<!-- SPIDER -->
 <section id="pg-spider">
-  <button style="background:none;border:none;font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:36px;display:flex;align-items:center;gap:8px;padding:0;transition:color .2s;" onmouseenter="this.style.color='var(--text)'" onmouseleave="this.style.color='var(--text3)'" onclick="goTo('projects')">
-    &#8592; &nbsp;<span data-fr="Retour aux projets" data-en="Back to projects">Retour aux projets</span>
-  </button>
+  <button style="background:none;border:none;font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:36px;display:flex;align-items:center;gap:8px;padding:0;" onclick="goTo('projects')">&#8592; &nbsp;Retour aux projets</button>
   <div class="sec-eyebrow">Robotique — 2025</div>
   <h2 class="sec-title">Mini Spider Robot</h2>
-  <p class="sec-sub" data-fr="Conception mécanique complète, électronique et firmware. Robot quadrupède commandé par WiFi." data-en="Complete mechanical, electronic and firmware design. WiFi-controlled quadruped robot.">Conception mécanique complète, électronique et firmware. Robot quadrupède commandé par WiFi.</p>
-
+  <p class="sec-sub">Conception mécanique complète, électronique et firmware. Robot quadrupède commandé par WiFi.</p>
   <div class="info-grid" style="margin-bottom:32px;">
     <div class="info-cell"><div class="info-label">MCU</div><div class="info-value">ESP32-WROOM</div></div>
-    <div class="info-cell"><div class="info-label" data-fr="Servomoteurs" data-en="Servomotors">Servomoteurs</div><div class="info-value">8× SG90 / MG90S</div></div>
+    <div class="info-cell"><div class="info-label">Servomoteurs</div><div class="info-value">8× SG90 / MG90S</div></div>
     <div class="info-cell"><div class="info-label">Driver PWM</div><div class="info-value">PCA9685 I2C</div></div>
-    <div class="info-cell"><div class="info-label" data-fr="Alimentation" data-en="Power Supply">Alimentation</div><div class="info-value">LiPo 11.1V 3S</div></div>
-    <div class="info-cell"><div class="info-label" data-fr="Régulation" data-en="Regulation">Régulation</div><div class="info-value">Hacheur Buck 5V</div></div>
-    <div class="info-cell"><div class="info-label" data-fr="Châssis" data-en="Chassis">Châssis</div><div class="info-value">PLA / FDM</div></div>
+    <div class="info-cell"><div class="info-label">Alimentation</div><div class="info-value">LiPo 11.1V 3S</div></div>
+    <div class="info-cell"><div class="info-label">Régulation</div><div class="info-value">Hacheur Buck 5V</div></div>
+    <div class="info-cell"><div class="info-label">Châssis</div><div class="info-value">PLA / FDM</div></div>
   </div>
-
-  <!-- gallery for spider -->
   <div class="gal-toolbar">
-    <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;" data-fr="Photos du projet" data-en="Project photos">Photos du projet</div>
-    <button class="btn" style="font-size:.75rem;padding:6px 14px;" onclick="openModal('spider')" data-fr="+ Ajouter" data-en="+ Add">+ Ajouter</button>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;">Photos du projet</div>
+    <button class="btn" style="font-size:.75rem;padding:6px 14px;" onclick="openModal('spider')">+ Ajouter</button>
   </div>
   <div class="gal-grid" id="gal-spider">
-    <div class="gal-cell" onclick="triggerChange(this)"><div class="gal-placeholder"><div class="ph-icon">&#x25A1;</div><span data-fr="Corps principal" data-en="Main body">Corps principal</span></div><div class="gal-hover" data-fr="Changer" data-en="Change">Changer</div></div>
-    <div class="gal-cell" onclick="triggerChange(this)"><div class="gal-placeholder"><div class="ph-icon">&#x25A1;</div><span data-fr="Assemblage pattes" data-en="Leg assembly">Assemblage pattes</span></div><div class="gal-hover" data-fr="Changer" data-en="Change">Changer</div></div>
-    <div class="gal-cell" onclick="triggerChange(this)"><div class="gal-placeholder"><div class="ph-icon">&#x25A1;</div><span>ESP32 + PCA9685</span></div><div class="gal-hover" data-fr="Changer" data-en="Change">Changer</div></div>
-    <div class="gal-cell" onclick="triggerChange(this)"><div class="gal-placeholder"><div class="ph-icon">&#x25A1;</div><span data-fr="Robot complet" data-en="Full robot">Robot complet</span></div><div class="gal-hover" data-fr="Changer" data-en="Change">Changer</div></div>
+    <div class="gal-cell" onclick="triggerChange(this)"><div class="gal-placeholder"><div class="ph-icon">&#x25A1;</div><span>Corps principal</span></div><div class="gal-hover">Changer</div></div>
+    <div class="gal-cell" onclick="triggerChange(this)"><div class="gal-placeholder"><div class="ph-icon">&#x25A1;</div><span>Assemblage pattes</span></div><div class="gal-hover">Changer</div></div>
+    <div class="gal-cell" onclick="triggerChange(this)"><div class="gal-placeholder"><div class="ph-icon">&#x25A1;</div><span>ESP32 + PCA9685</span></div><div class="gal-hover">Changer</div></div>
+    <div class="gal-cell" onclick="triggerChange(this)"><div class="gal-placeholder"><div class="ph-icon">&#x25A1;</div><span>Robot complet</span></div><div class="gal-hover">Changer</div></div>
     <div class="gal-add" onclick="openModal('spider')">+</div>
   </div>
 </section>
 
-<!-- ═══ PAGE: PENPLOTTER DETAIL ══════════════════════════ -->
+<!-- PENPLOTTER -->
 <section id="pg-penplotter">
-  <button style="background:none;border:none;font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:36px;display:flex;align-items:center;gap:8px;padding:0;transition:color .2s;" onmouseenter="this.style.color='var(--text)'" onmouseleave="this.style.color='var(--text3)'" onclick="goTo('projects')">
-    &#8592; &nbsp;<span data-fr="Retour aux projets" data-en="Back to projects">Retour aux projets</span>
-  </button>
-  <div class="sec-eyebrow" data-fr="Mécanique & Embarqué — 2024" data-en="Mechanics & Embedded — 2024">Mécanique & Embarqué — 2024</div>
+  <button style="background:none;border:none;font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:36px;display:flex;align-items:center;gap:8px;padding:0;" onclick="goTo('projects')">&#8592; &nbsp;Retour aux projets</button>
+  <div class="sec-eyebrow">Mécanique & Embarqué — 2024</div>
   <h2 class="sec-title">Pen Plotter</h2>
-  <p class="sec-sub" data-fr="Traceur 2 axes construit de A à Z : conception mécanique, électronique et algorithme de planification de trajectoire." data-en="2-axis plotter built from scratch: mechanical design, electronics and trajectory planning algorithm.">Traceur 2 axes construit de A à Z : conception mécanique, électronique et algorithme de planification de trajectoire.</p>
+  <p class="sec-sub">Traceur 2 axes construit de A à Z : conception mécanique, électronique et algorithme de planification de trajectoire.</p>
   <div class="info-grid" style="margin-bottom:32px;">
-    <div class="info-cell"><div class="info-label" data-fr="Axes" data-en="Axes">Axes</div><div class="info-value">X / Y — 2 axes</div></div>
-    <div class="info-cell"><div class="info-label" data-fr="Moteurs" data-en="Motors">Moteurs</div><div class="info-value">Pas à pas NEMA17</div></div>
-    <div class="info-cell"><div class="info-label" data-fr="Contrôle" data-en="Control">Contrôle</div><div class="info-value">G-Code / Arduino</div></div>
+    <div class="info-cell"><div class="info-label">Axes</div><div class="info-value">X / Y — 2 axes</div></div>
+    <div class="info-cell"><div class="info-label">Moteurs</div><div class="info-value">Pas à pas NEMA17</div></div>
+    <div class="info-cell"><div class="info-label">Contrôle</div><div class="info-value">G-Code / Arduino</div></div>
   </div>
   <div class="gal-toolbar">
-    <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;" data-fr="Photos du projet" data-en="Project photos">Photos du projet</div>
-    <button class="btn" style="font-size:.75rem;padding:6px 14px;" onclick="openModal('penplotter')" data-fr="+ Ajouter" data-en="+ Add">+ Ajouter</button>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;">Photos du projet</div>
+    <button class="btn" style="font-size:.75rem;padding:6px 14px;" onclick="openModal('penplotter')">+ Ajouter</button>
   </div>
   <div class="gal-grid" id="gal-penplotter">
-    <div class="gal-cell" onclick="triggerChange(this)"><div class="gal-placeholder"><div class="ph-icon">&#x25A1;</div><span data-fr="Structure mécanique" data-en="Mechanical structure">Structure mécanique</span></div><div class="gal-hover" data-fr="Changer" data-en="Change">Changer</div></div>
-    <div class="gal-cell" onclick="triggerChange(this)"><div class="gal-placeholder"><div class="ph-icon">&#x25A1;</div><span data-fr="En action" data-en="In action">En action</span></div><div class="gal-hover" data-fr="Changer" data-en="Change">Changer</div></div>
+    <div class="gal-cell" onclick="triggerChange(this)"><div class="gal-placeholder"><div class="ph-icon">&#x25A1;</div><span>Structure mécanique</span></div><div class="gal-hover">Changer</div></div>
+    <div class="gal-cell" onclick="triggerChange(this)"><div class="gal-placeholder"><div class="ph-icon">&#x25A1;</div><span>En action</span></div><div class="gal-hover">Changer</div></div>
     <div class="gal-add" onclick="openModal('penplotter')">+</div>
   </div>
 </section>
 
-<!-- ═══ PAGE: CLEANBOT DETAIL ════════════════════════════ -->
+<!-- CLEANBOT -->
 <section id="pg-cleanbot">
-  <button style="background:none;border:none;font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:36px;display:flex;align-items:center;gap:8px;padding:0;transition:color .2s;" onmouseenter="this.style.color='var(--text)'" onmouseleave="this.style.color='var(--text3)'" onclick="goTo('projects')">
-    &#8592; &nbsp;<span data-fr="Retour aux projets" data-en="Back to projects">Retour aux projets</span>
-  </button>
-  <div class="sec-eyebrow" data-fr="Robotique — 2024" data-en="Robotics — 2024">Robotique — 2024</div>
+  <button style="background:none;border:none;font-family:'JetBrains Mono',monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:36px;display:flex;align-items:center;gap:8px;padding:0;" onclick="goTo('projects')">&#8592; &nbsp;Retour aux projets</button>
+  <div class="sec-eyebrow">Robotique — 2024</div>
   <h2 class="sec-title">CleanBot</h2>
-  <p class="sec-sub" data-fr="Robot de nettoyage autonome avec navigation par capteurs et évitement d'obstacles." data-en="Autonomous cleaning robot with sensor navigation and obstacle avoidance.">Robot de nettoyage autonome avec navigation par capteurs et évitement d'obstacles.</p>
+  <p class="sec-sub">Robot de nettoyage autonome avec navigation par capteurs et évitement d'obstacles.</p>
   <div class="info-grid" style="margin-bottom:32px;">
-    <div class="info-cell"><div class="info-label" data-fr="Navigation" data-en="Navigation">Navigation</div><div class="info-value">Ultrasonique HC-SR04</div></div>
-    <div class="info-cell"><div class="info-label" data-fr="Moteurs" data-en="Motors">Moteurs</div><div class="info-value">DC + L298N</div></div>
-    <div class="info-cell"><div class="info-label" data-fr="Contrôle" data-en="Control">Contrôle</div><div class="info-value">Arduino</div></div>
+    <div class="info-cell"><div class="info-label">Navigation</div><div class="info-value">Ultrasonique HC-SR04</div></div>
+    <div class="info-cell"><div class="info-label">Moteurs</div><div class="info-value">DC + L298N</div></div>
+    <div class="info-cell"><div class="info-label">Contrôle</div><div class="info-value">Arduino</div></div>
   </div>
   <div class="gal-toolbar">
-    <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;" data-fr="Photos du projet" data-en="Project photos">Photos du projet</div>
-    <button class="btn" style="font-size:.75rem;padding:6px 14px;" onclick="openModal('cleanbot')" data-fr="+ Ajouter" data-en="+ Add">+ Ajouter</button>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;">Photos du projet</div>
+    <button class="btn" style="font-size:.75rem;padding:6px 14px;" onclick="openModal('cleanbot')">+ Ajouter</button>
   </div>
   <div class="gal-grid" id="gal-cleanbot">
-    <div class="gal-cell" onclick="triggerChange(this)"><div class="gal-placeholder"><div class="ph-icon">&#x25A1;</div><span>CleanBot</span></div><div class="gal-hover" data-fr="Changer" data-en="Change">Changer</div></div>
+    <div class="gal-cell" onclick="triggerChange(this)"><div class="gal-placeholder"><div class="ph-icon">&#x25A1;</div><span>CleanBot</span></div><div class="gal-hover">Changer</div></div>
     <div class="gal-add" onclick="openModal('cleanbot')">+</div>
   </div>
 </section>
 
-<!-- ═══ PAGE: TIMELINE ════════════════════════════════════ -->
+<!-- TIMELINE -->
 <section id="pg-timeline">
-  <div class="sec-eyebrow" data-fr="Parcours" data-en="Journey">Parcours</div>
-  <h2 class="sec-title" data-fr="Mon parcours" data-en="My Journey">Mon parcours</h2>
-  <p class="sec-sub" data-fr="Formation, expériences et réalisations — de Fès à ENSAM Meknès." data-en="Education, experience and achievements — from Fès to ENSAM Meknès.">Formation, expériences et réalisations — de Fès à ENSAM Meknès.</p>
-
-  <!-- Awards -->
-  <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-bottom:14px;" data-fr="Compétitions & Distinctions" data-en="Competitions & Awards">Compétitions & Distinctions</div>
+  <div class="sec-eyebrow">Parcours</div>
+  <h2 class="sec-title">Mon parcours</h2>
+  <p class="sec-sub">Formation, expériences et réalisations — de Fès à ENSAM Meknès.</p>
+  <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-bottom:14px;">Compétitions & Distinctions</div>
   <div class="awards-list">
-    <div class="award-item">
-      <div class="award-rank rank-gold">1</div>
-      <div class="award-info">
-        <div class="award-title" data-fr="1ère place — ARB (African Robotics Brain)" data-en="1st place — ARB (African Robotics Brain)">1ère place — ARB (African Robotics Brain)</div>
-        <div class="award-detail" data-fr="Compétition du Club Robotique ENSAM Meknès — Robot suiveur de ligne" data-en="ENSAM Meknès Robotics Club competition — Line follower robot">Compétition du Club Robotique ENSAM Meknès — Robot suiveur de ligne</div>
-      </div>
-    </div>
-    <div class="award-item">
-      <div class="award-rank rank-silver">2</div>
-      <div class="award-info">
-        <div class="award-title" data-fr="2ème place — Compétition interne ENSAM" data-en="2nd place — Internal ENSAM competition">2ème place — Compétition interne ENSAM</div>
-        <div class="award-detail" data-fr="Robot suiveur de ligne" data-en="Line follower robot">Robot suiveur de ligne</div>
-      </div>
-    </div>
-    <div class="award-item">
-      <div class="award-rank rank-bronze">3</div>
-      <div class="award-info">
-        <div class="award-title" data-fr="3ème place — Université privée de Fès" data-en="3rd place — Private University of Fès">3ème place — Université privée de Fès</div>
-        <div class="award-detail" data-fr="Compétition interuniversitaire de robotique" data-en="Interuniversity robotics competition">Compétition interuniversitaire de robotique</div>
-      </div>
-    </div>
-    <div class="award-item">
-      <div class="award-rank" style="background:var(--accent-dim);color:var(--accent);font-size:.7rem;font-family:'JetBrains Mono',monospace;">&#10003;</div>
-      <div class="award-info">
-        <div class="award-title" data-fr="Participation — ENSA Kénitra & Compétition Safran ENSAM" data-en="Participation — ENSA Kénitra & Safran ENSAM competition">Participation — ENSA Kénitra & Compétition Safran ENSAM</div>
-        <div class="award-detail" data-fr="Représentation du Club Robotique ENSAM" data-en="Representation of ENSAM Robotics Club">Représentation du Club Robotique ENSAM</div>
-      </div>
-    </div>
+    <div class="award-item"><div class="award-rank rank-gold">1</div><div><div class="award-title">1ère place — ARB (African Robotics Brain)</div><div class="award-detail">Compétition Club Robotique ENSAM Meknès — Robot suiveur de ligne</div></div></div>
+    <div class="award-item"><div class="award-rank rank-silver">2</div><div><div class="award-title">2ème place — Compétition interne ENSAM</div><div class="award-detail">Robot suiveur de ligne</div></div></div>
+    <div class="award-item"><div class="award-rank rank-bronze">3</div><div><div class="award-title">3ème place — Université privée de Fès</div><div class="award-detail">Compétition interuniversitaire de robotique</div></div></div>
+    <div class="award-item"><div class="award-rank" style="background:var(--accent-dim);color:var(--accent);font-size:.7rem;font-family:'JetBrains Mono',monospace;">&#10003;</div><div><div class="award-title">Participation — ENSA Kénitra & Compétition Safran ENSAM</div><div class="award-detail">Représentation du Club Robotique ENSAM</div></div></div>
   </div>
-
   <div style="height:24px;"></div>
-  <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-bottom:20px;" data-fr="Chronologie" data-en="Timeline">Chronologie</div>
-
+  <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-bottom:20px;">Chronologie</div>
   <div class="timeline">
-    <div class="tl-item">
-      <div class="tl-dot accent"></div>
-      <div class="tl-date">2024 — en cours</div>
-      <div class="tl-title" data-fr="Élève Ingénieur — ENSAM Meknès" data-en="Engineering Student — ENSAM Meknès">Élève Ingénieur — ENSAM Meknès</div>
-      <div class="tl-org">École Nationale Supérieure d'Arts et Métiers</div>
-      <div class="tl-desc" data-fr="Cycle ingénieur — spécialité électromécanique et digitalisation. Cours : mécanique, électronique, automatique, systèmes embarqués, gestion de projet." data-en="Engineering cycle — electromechanics and digitalization. Courses: mechanics, electronics, automatic control, embedded systems, project management.">Cycle ingénieur — spécialité électromécanique et digitalisation. Cours : mécanique, électronique, automatique, systèmes embarqués, gestion de projet.</div>
-    </div>
-    <div class="tl-item">
-      <div class="tl-dot accent"></div>
-      <div class="tl-date" data-fr="2024 — Vice Chef Matériels" data-en="2024 — VP Materials">2024 — Vice Chef Matériels</div>
-      <div class="tl-title" data-fr="Club Robotique ENSAM Meknès" data-en="ENSAM Meknès Robotics Club">Club Robotique ENSAM Meknès</div>
-      <div class="tl-org" data-fr="Responsabilité Hardware & Gestion" data-en="Hardware & Management Responsibility">Responsabilité Hardware & Gestion</div>
-      <div class="tl-desc" data-fr="Coordination de l'équipe hardware, gestion des composants et du matériel. Participation et organisation de compétitions. Projets : Spider, Pen Plotter, Snake, Chien, CleanBot." data-en="Hardware team coordination, component and equipment management. Competition participation and organization. Projects: Spider, Pen Plotter, Snake, Dog, CleanBot.">Coordination de l'équipe hardware, gestion des composants et du matériel. Participation et organisation de compétitions. Projets : Spider, Pen Plotter, Snake, Chien, CleanBot.</div>
-    </div>
-    <div class="tl-item">
-      <div class="tl-dot mauve"></div>
-      <div class="tl-date" data-fr="Été 2024 — Stage" data-en="Summer 2024 — Internship">Été 2024 — Stage</div>
-      <div class="tl-title" data-fr="Stage d'observation — Électromécanique industrielle" data-en="Observation Internship — Industrial Electromechanics">Stage d'observation — Électromécanique industrielle</div>
-      <div class="tl-org" data-fr="Usine Noor Fès — Production huile d'olive" data-en="Noor Fès Factory — Olive oil production">Usine Noor Fès — Production huile d'olive</div>
-      <div class="tl-desc" data-fr="Découverte du quotidien d'un technicien en électromécanique en milieu industriel. Consolidation des connaissances théoriques. Développement du sens d'observation et du travail en équipe." data-en="Discovery of the daily life of an electromechanics technician in an industrial setting. Consolidation of theoretical knowledge. Development of observation skills and teamwork.">Découverte du quotidien d'un technicien en électromécanique en milieu industriel. Consolidation des connaissances théoriques. Développement du sens d'observation et du travail en équipe.</div>
-    </div>
-    <div class="tl-item">
-      <div class="tl-dot"></div>
-      <div class="tl-date">2021 — 2024</div>
-      <div class="tl-title" data-fr="Baccalauréat Sciences Mathématiques" data-en="Mathematics Sciences Baccalaureate">Baccalauréat Sciences Mathématiques</div>
-      <div class="tl-org">Fès, Maroc</div>
-      <div class="tl-desc" data-fr="Formation scientifique rigoureuse. Bases solides en mathématiques, physique, et sciences appliquées." data-en="Rigorous scientific education. Strong foundations in mathematics, physics, and applied sciences.">Formation scientifique rigoureuse. Bases solides en mathématiques, physique, et sciences appliquées.</div>
-    </div>
+    <div class="tl-item"><div class="tl-dot accent"></div><div class="tl-date">2024 — en cours</div><div class="tl-title">Élève Ingénieur — ENSAM Meknès</div><div class="tl-org">École Nationale Supérieure d'Arts et Métiers</div><div class="tl-desc">Cycle ingénieur — spécialité électromécanique et digitalisation. Cours : mécanique, électronique, automatique, systèmes embarqués, gestion de projet.</div></div>
+    <div class="tl-item"><div class="tl-dot accent"></div><div class="tl-date">2024 — Vice Chef Matériels</div><div class="tl-title">Club Robotique ENSAM Meknès</div><div class="tl-org">Responsabilité Hardware & Gestion</div><div class="tl-desc">Coordination de l'équipe hardware, gestion des composants et du matériel. Participation et organisation de compétitions. Projets : Spider, Pen Plotter, Snake, Chien, CleanBot.</div></div>
+    <div class="tl-item"><div class="tl-dot mauve"></div><div class="tl-date">Été 2024 — Stage</div><div class="tl-title">Stage d'observation — Électromécanique industrielle</div><div class="tl-org">Usine Noor Fès — Production huile d'olive</div><div class="tl-desc">Découverte du quotidien d'un technicien en électromécanique en milieu industriel. Consolidation des connaissances théoriques.</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-date">2021 — 2024</div><div class="tl-title">Baccalauréat Sciences Mathématiques</div><div class="tl-org">Fès, Maroc</div><div class="tl-desc">Formation scientifique rigoureuse. Bases solides en mathématiques, physique, et sciences appliquées.</div></div>
   </div>
 </section>
 
-<!-- ═══ PAGE: CONTACT ══════════════════════════════════════ -->
+<!-- CONTACT -->
 <section id="pg-contact">
-  <div class="sec-eyebrow" data-fr="Restons en contact" data-en="Let's connect">Restons en contact</div>
-  <h2 class="sec-title" data-fr="Contact" data-en="Contact">Contact</h2>
-  <p class="sec-sub" data-fr="Ouvert aux collaborations techniques, stages et projets en électromécanique." data-en="Open to technical collaborations, internships and electromechanics projects.">Ouvert aux collaborations techniques, stages et projets en électromécanique.</p>
-
+  <div class="sec-eyebrow">Restons en contact</div>
+  <h2 class="sec-title">Contact</h2>
+  <p class="sec-sub">Ouvert aux collaborations techniques, stages et projets en électromécanique.</p>
   <div class="contact-grid">
-    <div class="contact-cell">
-      <div class="contact-label">Email</div>
-      <div class="contact-value"><a href="mailto:monceffarah083@gmail.com">monceffarah083@gmail.com</a></div>
-    </div>
-    <div class="contact-cell">
-      <div class="contact-label" data-fr="Email académique" data-en="Academic email">Email académique</div>
-      <div class="contact-value"><a href="mailto:mon.farah@edu.umi.ac.ma">mon.farah@edu.umi.ac.ma</a></div>
-    </div>
-    <div class="contact-cell">
-      <div class="contact-label">LinkedIn</div>
-      <div class="contact-value"><a href="https://linkedin.com/in/moncif-farah" target="_blank">Moncif Farah</a></div>
-    </div>
-    <div class="contact-cell">
-      <div class="contact-label" data-fr="Téléphone" data-en="Phone">Téléphone</div>
-      <div class="contact-value"><a href="tel:+212659211701">+212 659 211 701</a></div>
-    </div>
-    <div class="contact-cell">
-      <div class="contact-label" data-fr="Localisation" data-en="Location">Localisation</div>
-      <div class="contact-value">Fès / Meknès, Maroc</div>
-    </div>
-    <div class="contact-cell">
-      <div class="contact-label" data-fr="Disponibilité" data-en="Availability">Disponibilité</div>
-      <div class="contact-value" data-fr="Ouvert aux stages & collaborations" data-en="Open to internships & collaborations">Ouvert aux stages & collaborations</div>
-    </div>
+    <div class="contact-cell"><div class="contact-label">Email</div><div class="contact-value"><a href="mailto:monceffarah083@gmail.com">monceffarah083@gmail.com</a></div></div>
+    <div class="contact-cell"><div class="contact-label">Email académique</div><div class="contact-value"><a href="mailto:mon.farah@edu.umi.ac.ma">mon.farah@edu.umi.ac.ma</a></div></div>
+    <div class="contact-cell"><div class="contact-label">LinkedIn</div><div class="contact-value"><a href="https://linkedin.com/in/moncif-farah" target="_blank">Moncif Farah</a></div></div>
+    <div class="contact-cell"><div class="contact-label">Téléphone</div><div class="contact-value"><a href="tel:+212659211701">+212 659 211 701</a></div></div>
+    <div class="contact-cell"><div class="contact-label">Localisation</div><div class="contact-value">Fès / Meknès, Maroc</div></div>
+    <div class="contact-cell"><div class="contact-label">Disponibilité</div><div class="contact-value">Ouvert aux stages & collaborations</div></div>
   </div>
-
-  <div class="contact-note" data-fr="Pour toute collaboration ou opportunité de stage, précisez le domaine et l'objectif dans votre message. Je réponds sous 48h. Anglais et français bienvenus." data-en="For any collaboration or internship opportunity, please specify the field and objective in your message. I reply within 48h. English and French welcome.">
-    Pour toute collaboration ou opportunité de stage, précisez le domaine et l'objectif dans votre message. Je réponds sous 48h. Anglais et français bienvenus.
-  </div>
+  <div class="contact-note">Pour toute collaboration ou opportunité de stage, précisez le domaine et l'objectif dans votre message. Je réponds sous 48h. Anglais et français bienvenus.</div>
 </section>
 
 </main>
@@ -907,21 +547,208 @@ section.active{display:block;animation:fadeUp .36s ease both;}
 <!-- MODAL -->
 <div class="modal-bg" id="modal">
   <div class="modal">
-    <div class="modal-title" data-fr="Ajouter une photo" data-en="Add a photo">Ajouter une photo</div>
-    <label class="f-label" data-fr="Nom / Description" data-en="Name / Description">Nom / Description</label>
+    <div class="modal-title">Ajouter une photo</div>
+    <label class="f-label">Nom / Description</label>
     <input type="text" class="f-input" id="m-name" placeholder="Ex: Vue d'ensemble...">
-    <div class="drop-z" id="dropz" onclick="document.getElementById('filein').click()" data-fr="Glisser une image ou cliquer" data-en="Drop an image or click">Glisser une image ou cliquer</div>
+    <div class="drop-z" id="dropz" onclick="document.getElementById('filein').click()">Glisser une image ou cliquer</div>
     <input type="file" id="filein" accept="image/*" style="display:none" onchange="handleFile(this)">
     <img id="m-prev" class="modal-prev">
     <div class="modal-acts">
-      <button class="btn" onclick="closeModal()" data-fr="Annuler" data-en="Cancel">Annuler</button>
-      <button class="btn primary" onclick="confirmAdd()" data-fr="Ajouter" data-en="Add">Ajouter</button>
+      <button class="btn" onclick="closeModal()">Annuler</button>
+      <button class="btn primary" onclick="confirmAdd()">Ajouter</button>
     </div>
   </div>
 </div>
 
+<!-- ═══ THREE.JS 3D GLB LOGO ═══ -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+
+const canvas = document.getElementById('canvas3d');
+const loadingEl = document.getElementById('logo3d-loading');
+
+/* ── Renderer ─────────────────────────────── */
+const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(180, 180);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.5;
+
+/* ── Scene & Camera ───────────────────────── */
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(42, 1, 0.01, 100);
+camera.position.z = 4.5;
+
+/* ── Lighting ─────────────────────────────── */
+// Ambient
+scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+
+// Key light: warm gold from top-right (simulates photo look)
+const keyLight = new THREE.DirectionalLight(0xffe080, 3.5);
+keyLight.position.set(4, 5, 4);
+scene.add(keyLight);
+
+// Fill: cool white from left (metal sheen)
+const fillLight = new THREE.DirectionalLight(0xd8e4ff, 2.0);
+fillLight.position.set(-4, 2, 2);
+scene.add(fillLight);
+
+// Rim: soft gold from behind-below
+const rimLight = new THREE.DirectionalLight(0xf5c518, 1.0);
+rimLight.position.set(0, -4, -3);
+scene.add(rimLight);
+
+// Point: CPU center glow
+const cpuGlow = new THREE.PointLight(0xf5c518, 2.5, 5);
+cpuGlow.position.set(0, 0, 2.5);
+scene.add(cpuGlow);
+
+/* ── Material override ─────────────────────
+   Gear teeth  → brushed steel (grey metallic)
+   Circuit lines → gold (#f5c518)
+   CPU chip    → near black
+──────────────────────────────────────────── */
+const matMetal = new THREE.MeshStandardMaterial({
+  color: 0x909098,
+  roughness: 0.35,
+  metalness: 0.9,
+  envMapIntensity: 1.2
+});
+const matGold = new THREE.MeshStandardMaterial({
+  color: 0xf5c518,
+  roughness: 0.12,
+  metalness: 0.95,
+  emissive: 0xc89a10,
+  emissiveIntensity: 0.25
+});
+const matCPU = new THREE.MeshStandardMaterial({
+  color: 0x101012,
+  roughness: 0.35,
+  metalness: 0.6
+});
+
+function applyMaterials(root) {
+  root.traverse(child => {
+    if (!child.isMesh) return;
+    const n = (child.name + ' ' + (child.material ? child.material.name : '')).toLowerCase();
+    if (n.includes('cpu') || n.includes('chip') || n.includes('ic') || n.includes('black') || n.includes('dark')) {
+      child.material = matCPU;
+    } else if (n.includes('gold') || n.includes('circuit') || n.includes('trace') ||
+               n.includes('track') || n.includes('wire') || n.includes('pcb') ||
+               n.includes('line') || n.includes('pin')) {
+      child.material = matGold;
+    } else {
+      child.material = matMetal;
+    }
+    child.castShadow = false;
+    child.receiveShadow = false;
+  });
+}
+
+/* ── Mouse / Touch drag ───────────────────── */
+let isDragging = false;
+let prevX = 0, prevY = 0;
+let velY = 0.008, velX = 0;
+let rotY = 0, rotX = 0.2;
+let autoSpin = true;
+let model = null;
+
+function onDown(x, y) {
+  isDragging = true; autoSpin = false;
+  prevX = x; prevY = y; velY = 0; velX = 0;
+}
+function onMove(x, y) {
+  if (!isDragging) return;
+  velY = (x - prevX) * 0.013;
+  velX = (y - prevY) * 0.013;
+  prevX = x; prevY = y;
+}
+function onUp() {
+  isDragging = false;
+  setTimeout(() => { autoSpin = true; }, 1800);
+}
+
+canvas.addEventListener('mousedown', e => onDown(e.clientX, e.clientY));
+window.addEventListener('mousemove', e => onMove(e.clientX, e.clientY));
+window.addEventListener('mouseup', onUp);
+canvas.addEventListener('touchstart', e => onDown(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+window.addEventListener('touchmove', e => { if (isDragging) onMove(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
+window.addEventListener('touchend', onUp);
+
+/* ── Load GLB ─────────────────────────────── */
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/');
+const loader = new GLTFLoader();
+loader.setDRACOLoader(dracoLoader);
+
+loader.load(
+  'Untitled1.glb',
+  gltf => {
+    model = gltf.scene;
+
+    // Center + fit to view
+    const box = new THREE.Box3().setFromObject(model);
+    const c = box.getCenter(new THREE.Vector3());
+    const s = box.getSize(new THREE.Vector3());
+    const maxS = Math.max(s.x, s.y, s.z);
+    const sc = 3.0 / maxS;
+    model.scale.setScalar(sc);
+    model.position.sub(c.multiplyScalar(sc));
+
+    applyMaterials(model);
+    scene.add(model);
+
+    loadingEl.style.display = 'none';
+    canvas.style.display = 'block';
+
+    animate();
+  },
+  xhr => {
+    if (xhr.total > 0) loadingEl.textContent = Math.round(xhr.loaded / xhr.total * 100) + '%';
+  },
+  err => {
+    console.error('GLB error:', err);
+    loadingEl.textContent = 'Erreur .glb';
+    loadingEl.style.fontSize = '.5rem';
+  }
+);
+
+/* ── Render loop ──────────────────────────── */
+function animate() {
+  requestAnimationFrame(animate);
+  if (model) {
+    if (!isDragging) {
+      if (autoSpin) {
+        velY += (0.008 - velY) * 0.03;
+        velX *= 0.94;
+      } else {
+        velY *= 0.93;
+        velX *= 0.93;
+      }
+    }
+    rotY += velY;
+    rotX = Math.max(-1.1, Math.min(1.1, rotX + velX));
+    model.rotation.y = rotY;
+    model.rotation.x = rotX;
+  }
+  renderer.render(scene, camera);
+}
+</script>
+
+<!-- ═══ UI LOGIC ═══ -->
 <script>
-/* ─── STATE ──────────────────────────────── */
 let currentPage = 'home';
 let sidebarOpen = false;
 let lang = 'fr';
@@ -939,36 +766,23 @@ const navMap = {
   penplotter:'nl-projects', cleanbot:'nl-projects',
   timeline:'nl-timeline', contact:'nl-contact'
 };
-const subMap = {
-  spider:'ns-spider', penplotter:'ns-penplotter', cleanbot:'ns-cleanbot'
-};
+const subMap = { spider:'ns-spider', penplotter:'ns-penplotter', cleanbot:'ns-cleanbot' };
 
-/* ─── NAVIGATION ─────────────────────────── */
 function goTo(page) {
   const cur = document.getElementById(pageMap[currentPage]);
   if (cur) cur.classList.remove('active');
   currentPage = page;
   const next = document.getElementById(pageMap[page]);
-  if (next) {
-    next.classList.add('active');
-    // trigger skill bars animation if skills page
-    if (page === 'skills') setTimeout(animateBars, 100);
-  }
-  // nav active
+  if (next) { next.classList.add('active'); if (page === 'skills') setTimeout(animateBars, 100); }
   document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
   const nl = document.getElementById(navMap[page]);
   if (nl) nl.classList.add('active');
-  // sub nav
   document.querySelectorAll('.nav-sub').forEach(n => n.classList.remove('active'));
-  if (subMap[page]) {
-    const ns = document.getElementById(subMap[page]);
-    if (ns) ns.classList.add('active');
-  }
+  if (subMap[page]) { const ns = document.getElementById(subMap[page]); if (ns) ns.classList.add('active'); }
   closeSidebar();
-  window.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-/* ─── SIDEBAR ────────────────────────────── */
 function toggleSidebar() { sidebarOpen ? closeSidebar() : openSidebar(); }
 function openSidebar() {
   sidebarOpen = true;
@@ -983,7 +797,6 @@ function closeSidebar() {
   document.getElementById('burger').classList.remove('active');
 }
 
-/* ─── THEME ──────────────────────────────── */
 function toggleTheme() {
   const h = document.documentElement;
   const dark = h.getAttribute('data-theme') === 'dark';
@@ -991,75 +804,49 @@ function toggleTheme() {
   document.getElementById('themeIco').innerHTML = dark ? '&#9788;' : '&#9790;';
 }
 
-/* ─── LANGUAGE ───────────────────────────── */
 function toggleLang() {
   lang = lang === 'fr' ? 'en' : 'fr';
   document.getElementById('langInd').textContent = lang.toUpperCase();
   document.getElementById('langTarget').textContent = lang === 'fr' ? 'EN' : 'FR';
   document.documentElement.lang = lang;
-  // update all elements with data-fr / data-en
   document.querySelectorAll('[data-fr][data-en]').forEach(el => {
-    const txt = el.getAttribute('data-' + lang);
-    if (txt !== null) el.innerHTML = txt;
-  });
-  // update placeholders
-  document.querySelectorAll('[placeholder]').forEach(el => {
-    if (lang === 'en') { if (!el._orig) el._orig = el.placeholder; el.placeholder = 'e.g. Overview...'; }
-    else if (el._orig) el.placeholder = el._orig;
+    const t = el.getAttribute('data-' + lang);
+    if (t !== null) el.innerHTML = t;
   });
 }
 
-/* ─── SKILL BARS ─────────────────────────── */
 function animateBars() {
-  document.querySelectorAll('.skill-bar-fill').forEach(bar => {
-    const w = bar.getAttribute('data-w');
-    bar.style.width = w + '%';
-  });
+  document.querySelectorAll('.skill-bar-fill').forEach(b => { b.style.width = b.getAttribute('data-w') + '%'; });
 }
 
-/* ─── PROJECT FILTER ─────────────────────── */
-function filterProj(cat) {
+function filterProj(cat, event) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
+  if (event && event.target) event.target.classList.add('active');
   document.querySelectorAll('.proj-card').forEach(card => {
     const cats = card.getAttribute('data-cat') || '';
     card.style.display = (cat === 'all' || cats.includes(cat)) ? '' : 'none';
   });
 }
 
-/* ─── GALLERY ────────────────────────────── */
-function openModal(galleryId) {
-  activeGallery = galleryId;
-  pendingImg = null;
-  document.getElementById('m-name').value = '';
-  document.getElementById('m-prev').style.display = 'none';
-  document.getElementById('modal').classList.add('open');
-}
+function openModal(g) { activeGallery = g; pendingImg = null; document.getElementById('m-name').value = ''; document.getElementById('m-prev').style.display = 'none'; document.getElementById('modal').classList.add('open'); }
 function closeModal() { document.getElementById('modal').classList.remove('open'); }
 function handleFile(input) {
   if (!input.files[0]) return;
   const r = new FileReader();
-  r.onload = e => {
-    pendingImg = e.target.result;
-    const p = document.getElementById('m-prev');
-    p.src = pendingImg; p.style.display = 'block';
-  };
+  r.onload = e => { pendingImg = e.target.result; const p = document.getElementById('m-prev'); p.src = pendingImg; p.style.display = 'block'; };
   r.readAsDataURL(input.files[0]);
 }
 function confirmAdd() {
   const name = document.getElementById('m-name').value || 'Photo';
   const grid = document.getElementById('gal-' + activeGallery);
   if (!grid) { closeModal(); return; }
-  const addBtn = grid.querySelector('.gal-add');
   const cell = document.createElement('div');
   cell.className = 'gal-cell';
   cell.onclick = () => triggerChange(cell);
-  if (pendingImg) {
-    cell.innerHTML = '<img src="' + pendingImg + '"><div class="gal-hover" data-fr="Changer" data-en="Change">Changer</div>';
-  } else {
-    cell.innerHTML = '<div class="gal-placeholder"><div class="ph-icon">&#x25A1;</div><span>' + name + '</span></div><div class="gal-hover">Changer</div>';
-  }
-  grid.insertBefore(cell, addBtn);
+  cell.innerHTML = pendingImg
+    ? '<img src="' + pendingImg + '"><div class="gal-hover">Changer</div>'
+    : '<div class="gal-placeholder"><div class="ph-icon">&#x25A1;</div><span>' + name + '</span></div><div class="gal-hover">Changer</div>';
+  grid.insertBefore(cell, grid.querySelector('.gal-add'));
   closeModal();
 }
 function triggerChange(cell) {
@@ -1079,7 +866,6 @@ function triggerChange(cell) {
   };
   inp.click();
 }
-// drag & drop
 const dz = document.getElementById('dropz');
 dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('over'); });
 dz.addEventListener('dragleave', () => dz.classList.remove('over'));
@@ -1093,53 +879,6 @@ dz.addEventListener('drop', e => {
   }
 });
 document.getElementById('modal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
-</script>
-  <script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160/build/three.module.js';
-import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.160/examples/jsm/loaders/GLTFLoader.js';
-
-const container = document.getElementById("logo3d");
-
-const scene = new THREE.Scene();
-
-const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
-camera.position.z = 4;
-
-const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-renderer.setSize(180, 180);
-container.appendChild(renderer.domElement);
-
-// lumière
-const light = new THREE.DirectionalLight(0xffffff, 2);
-light.position.set(5,5,5);
-scene.add(light);
-
-// charger ton logo
-const loader = new GLTFLoader();
-loader.load('Untitled.glb', function(gltf){
-
-  const model = gltf.scene;
-
-  // centrer le modèle
-  model.position.set(0, 0, 0);
-
-  // taille
-  model.scale.set(1.5,1.5,1.5);
-
-  scene.add(model);
-
-  function animate(){
-    requestAnimationFrame(animate);
-
-    // rotation style Kamal
-    model.rotation.y += 0.01;
-    model.rotation.x = 0.2;
-
-    renderer.render(scene, camera);
-  }
-
-  animate();
-});
 </script>
 </body>
 </html>
